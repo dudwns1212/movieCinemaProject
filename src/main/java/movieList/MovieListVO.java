@@ -1,0 +1,53 @@
+package movieList;
+//무비VO 수정 완
+public class MovieListVO {
+	public int movieNo;        // movie_no (auto_increment)
+	public String movieTitle;  // title
+	public int moviePrice;     // price
+	public int movieTime;      // movieTime
+	public String genre;       // genre
+
+	public MovieListVO() {
+		
+	}
+	
+	public int getMovieNo() {
+		return movieNo;
+	}
+	
+	public void setMovieNo(int movieNo) {
+		this.movieNo = movieNo;
+	}
+	
+	public String getMovieTitle() {
+		return movieTitle;
+	}
+	
+	public void setMovieTitle(String movieTitle) {  // 메서드명 수정
+		this.movieTitle = movieTitle;
+	}
+	
+	public int getMoviePrice() {
+		return moviePrice;
+	}
+	
+	public void setMoviePrice(int moviePrice) {
+		this.moviePrice = moviePrice;
+	}
+	
+	public int getMovieTime() {
+		return movieTime;
+	}
+	
+	public void setMovieTime(int movieTime) {
+		this.movieTime = movieTime;
+	}
+	
+	public String getGenre() {
+		return genre;
+	}
+	
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+}
