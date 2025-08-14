@@ -10,7 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<<<<<<< Updated upstream
   <style>
+=======
+  <style> 
+>>>>>>> Stashed changes
     :root {
       --bg: #0f1014;
       --panel: #151822;
