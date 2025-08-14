@@ -9,6 +9,7 @@
 <title>로그인</title>
 </head>
 <body>
+<%@ include file="header.jsp" %>
 <!-- 로그인 기능 프론트앤드 수정  -->
     <a href="home.do">집</a>
     <p></p>
