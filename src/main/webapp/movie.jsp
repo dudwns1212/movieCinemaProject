@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<a href="home.do">집</a>
+<a href="home.do">집에 가는 길</a>
 </body>
 </html>
