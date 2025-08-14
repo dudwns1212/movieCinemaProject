@@ -8,6 +8,7 @@
 <title>회원가입</title>
 </head>
 <body>
+<%@ include file="header.jsp" %>
 <!-- 회원가입 기능 프론트앤드 수정해야됨 -->
     <h2>회원가입</h2>
 

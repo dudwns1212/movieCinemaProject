@@ -70,6 +70,8 @@ public class UserServlet extends HttpServlet {
 				req.setAttribute("errorMsg", "회원가입 실패. 다시 시도해주세요.");
 				forwardPage = "/register.jsp";
 			}
+		} else if (uri.endsWith("update.do")) {
+			
 		} else if (uri.endsWith("movie.do")) {
 			forwardPage = "/movie.jsp";
 		} else if (uri.endsWith("seat.do")) {
@@ -81,6 +83,8 @@ public class UserServlet extends HttpServlet {
 		    HttpSession session = req.getSession();
 		    session.invalidate(); // 세션 무효화
 		    forwardPage = "/home.jsp";
+		} else if (uri.endsWith("myPage.do")) {
+			forwardPage = "/myPage.jsp";
 		}
 
 		req.getRequestDispatcher(forwardPage).forward(req, resp);

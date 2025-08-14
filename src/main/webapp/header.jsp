@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <style>
 /* 헤더 컨테이너 */
 .header-container {
@@ -13,17 +14,13 @@
     margin: 0 auto;
     background-color: #000; /* 1200px 안쪽만 검정 */
     color: #eee;
-<<<<<<< Updated upstream
     padding: 20px 0 60px; /* 아래쪽 넓혀서 버튼 공간 확보 */
-=======
-    padding: 3px 0 6px; /* 아래쪽 넓혀서 버튼 공간 확보 */
->>>>>>> Stashed changes
     position: relative;
     text-align: center;
     box-sizing: border-box;
 }
 
-h1 {
+.header-inner h1 {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 700;
@@ -37,15 +34,19 @@ h1 {
     margin: 20px auto 0; /* 로고와 언더라인 간격 */
 }
 
-/* 로그인/회원가입 버튼 */
-.login, .signup {
+/* 로그인/회원가입 또는 사용자 정보 영역 */
+.user-section {
     position: absolute;
+    right: 10px;
     top: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
-.login { right: 100px; }
-.signup { right: 10px; }
 
-.login button, .signup button {
+.user-section button {
     background: transparent;
     border: 1px solid #666;
     color: #eee;
@@ -54,8 +55,16 @@ h1 {
     cursor: pointer;
     transition: 0.3s;
 }
-.login button:hover, .signup button:hover {
+
+.user-section button:hover {
     background-color: #333;
+}
+
+/* 사용자 이름 스타일 */
+.user-name {
+    color: #4ECDC4;
+    font-weight: bold;
+    margin-right: 10px;
 }
 
 /* 언더라인 아래 버튼 메뉴 */
@@ -76,6 +85,7 @@ h1 {
     font-weight: 700;
     transition: 0.3s;
 }
+
 .ticketing_menu button:hover {
     background-color: #333;
 }
@@ -83,19 +93,38 @@ h1 {
 
 <div class="header-container">
     <div class="header-inner">
-        <!-- 로그인 -->
-        <form action="login.jsp" method="get">
-            <div class="login"><button>로그인</button></div>
-        </form>
-
-        <!-- 회원가입 -->
-        <form action="register.jsp" method="get">
-            <div class="signup"><button>회원가입</button></div>
-        </form>
+        <!-- 로그인 상태에 따른 버튼 표시 -->
+        <div class="user-section">
+            <% 
+            // 세션에서 로그인 사용자 정보 가져오기
+            userList.UserListVO loginUser = (userList.UserListVO)session.getAttribute("loginUser");
+            
+            if (loginUser != null) { 
+                // 로그인된 상태
+            %>
+                <span class="user-name"><%=loginUser.getUserName()%>님</span>
+                <form action="myPage.do" style="display: inline;">
+                    <button type="submit">마이페이지</button>
+                </form>
+                <form action="logout.do" style="display: inline;">
+                    <button type="submit">로그아웃</button>
+                </form>
+            <% 
+            } else { 
+                // 로그인되지 않은 상태
+            %>
+                <form action="login.jsp" method="post" style="display: inline;">
+                    <button type="submit">로그인</button>
+                </form>
+                <form action="register.jsp" method="post" style="display: inline;">
+                    <button type="submit">회원가입</button>
+                </form>
+            <% } %>
+        </div>
 
         <!-- 로고 -->
         <h1>
-            <a href="home.do" style="color:inherit;text-decoration:none;">
+            <a href="home.do" style="color: inherit; text-decoration: none;">
                 <div>공간 시네마</div>
                 <div>LX-CINEMA</div>
             </a>
@@ -106,19 +135,15 @@ h1 {
 
         <!-- 언더라인 아래 버튼 메뉴 -->
         <div class="ticketing_menu">
-            <form action="seat.do" method="get">
+            <form action="seat.do" method="get" style="display: inline;">
                 <button type="submit">예매</button>
             </form>
-            <form>
-                <button type="button">영화</button>
+            <form action="movie.do" method="get" style="display: inline;">
+                <button type="submit">영화</button>
             </form>
-            <form>
-                <button type="button">이벤트</button>
+            <form action="cinema.do" method="get" style="display: inline;">
+                <button type="submit">영화관</button>
             </form>
         </div>
     </div>
-<<<<<<< Updated upstream
 </div>
-=======
-</div>
->>>>>>> Stashed changes
