@@ -104,7 +104,7 @@ body {
 		<div class="register-box">
 			<h1>회원가입</h1>
 			<form action="register.do" method="post">
-
+				<input type="hidden" name="userNo">
 				<input type="text" name="userId" placeholder="아이디를 입력하세요" required>
 				<input type="password" name="userPassword" placeholder="비밀번호를 입력하세요" required> 
 				<input type="text" name="userName" placeholder="이름을 입력하세요" required> 

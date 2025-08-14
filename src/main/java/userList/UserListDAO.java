@@ -66,7 +66,7 @@ public class UserListDAO {
     }
     
     public UserListVO checkUser(String un) {
-    	String sql = "SELECT * FROM users WHERE password = ?";
+    	String sql = "SELECT * FROM users WHERE user_id = ?";
 
         //try-with-resources 문법으로 try문이 끝나면 자동으로 닫음
         try (Connection conn = getConnection();
@@ -92,6 +92,38 @@ public class UserListDAO {
         }
         return null;  // 일치하는 사용자 없거나 에러 발생 시 null 반환 (로그인 실패)
     }
+    
+    public int update(UserListVO user) {
+        String sql = "UPDATE users SET " +
+                    "id = ?, " +
+                    "password = ?, " +
+                    "name = ?, " +
+                    "mobile = ?, " +
+                    "age = ? " +
+                    "WHERE user_id = ?";
+
+        int result = 0;
+
+        try (Connection conn = getConnection();
+             PreparedStatement psmt = conn.prepareStatement(sql)) {
+            
+            psmt.setString(1, user.getUserId());
+            psmt.setString(2, user.getUserPassword());
+            psmt.setString(3, user.getUserName());
+            psmt.setString(4, user.getUserMobile());
+            psmt.setInt(5, user.getUserAge());
+            psmt.setInt(6, user.getUserNo());
+
+            result = psmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+    
+    
     
     private static Connection getConnection() throws Exception {
         Context initContext = new InitialContext();

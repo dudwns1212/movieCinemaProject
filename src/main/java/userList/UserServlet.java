@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import cinemaList.CinemaListDAO;
 import movieList.MovieListDAO;
+
 //유저 부분 서블릿 현: 로그인,회원가입,로그아웃1 / 추가: 수정
 @WebServlet("*.do")
 public class UserServlet extends HttpServlet {
@@ -71,24 +72,53 @@ public class UserServlet extends HttpServlet {
 				forwardPage = "/register.jsp";
 			}
 		} else if (uri.endsWith("update.do")) {
-			
+			// 기존 메서드 활용해서 객체 생성
+			UserListVO updateUser = makeUserFromReq(req);
+
+			// DAO를 통해 업데이트 실행
+			UserListDAO udao = new UserListDAO();
+			int result = udao.update(updateUser);
+
+			if (result > 0) {
+				// 성공 시 세션 정보도 업데이트
+				HttpSession session = req.getSession();
+				session.setAttribute("loginUser", updateUser);
+				req.setAttribute("msg", "회원정보가 성공적으로 수정되었습니다.");
+				forwardPage = "/update.jsp";
+			} else {
+				// 실패 시
+				req.setAttribute("errorMsg", "회원정보 수정에 실패했습니다.");
+				forwardPage = "/update.jsp";
+			}
 		} else if (uri.endsWith("checkPw.do")) {
-			String un = req.getParameter("userId");
+			String un = req.getParameter("userNo");
+			String pw = req.getParameter("pw");
 			UserListVO user = udao.checkUser(un);
-			forwardPage = "/update.jsp";
+			if (pw.equals(user.getUserPassword())) {
+				forwardPage = "/update.jsp";
+			} else {
+				String errorMsg = "비밀번호가 일치하지 않습니다";
+				req.setAttribute("errorMsg", errorMsg);
+				forwardPage = "/myPage.jsp";
+			}
+
 		} else if (uri.endsWith("seat.do")) {
 			forwardPage = "/seat.jsp";
 		} else if (uri.endsWith("cinema.do")) {
 			forwardPage = "/cinema.jsp";
 		} else if (uri.endsWith("logout.do")) {
-		    // 로그아웃 처리
-		    HttpSession session = req.getSession();
-		    session.invalidate(); // 세션 무효화
-		    forwardPage = "/home.jsp";
+			// 로그아웃 처리
+			HttpSession session = req.getSession();
+			session.invalidate(); // 세션 무효화
+			forwardPage = "/home.jsp";
 		} else if (uri.endsWith("myPage.do")) {
 			forwardPage = "/myPage.jsp";
 		} else if (uri.endsWith("event.do")) {
 			forwardPage = "/event.jsp";
+		} else if (uri.endsWith("movie.do")) {
+			forwardPage = "/movie.jsp";
+		} else if (uri.endsWith("reserve.do")) {
+			forwardPage = "/reserve.jsp";
 		}
 
 		req.getRequestDispatcher(forwardPage).forward(req, resp);
@@ -97,12 +127,15 @@ public class UserServlet extends HttpServlet {
 	// 요청 파라미터를 UserListVO 객체로 만들어 반환하는 헬퍼 메서드
 	private UserListVO makeUserFromReq(HttpServletRequest req) {
 		UserListVO user = new UserListVO();
+
 		user.setUserId(req.getParameter("userId"));
 		user.setUserPassword(req.getParameter("userPassword"));
 		user.setUserName(req.getParameter("userName"));
 		try {
+			user.setUserNo(Integer.parseInt(req.getParameter("userNo")));
 			user.setUserAge(Integer.parseInt(req.getParameter("userAge")));
 		} catch (NumberFormatException e) {
+			user.setUserNo(0);
 			user.setUserAge(0);
 		}
 		user.setUserMobile(req.getParameter("userMobile"));

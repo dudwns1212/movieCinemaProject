@@ -103,15 +103,16 @@ body {
 	<div class="register-container">
 		<div class="register-box">
 			<h1>정보 수정</h1>
-			<form action="register.do" method="post">			
+			<form action="update.do" method="post">			
 <%
    				userList.UserListVO currentUser = (userList.UserListVO)session.getAttribute("loginUser");
-%>
-				<input type="text" name="userId" placeholder="아이디 : <%=currentUser.getUserId()%>">
-				<input type="password" name="userPassword" placeholder="비밀번호는 보안입니다."> 
-				<input type="text" name="userName" placeholder="이름 : <%=currentUser.getUserName()%>"> 
-				<input type="tel" name="userMobile" placeholder="전화번호 : <%=currentUser.getUserMobile()%>"> 
-				<input type="number" name="userAge" placeholder="나이 : <%=currentUser.getUserAge()%>">
+%>				
+				<input type="hidden" name="userNo" value="<%=currentUser.getUserNo()%>">
+				<input type="text" name="userId" placeholder="아이디 : <%=currentUser.getUserId()%>" required>
+				<input type="password" name="userPassword" placeholder="비밀번호는 보안입니다." required> 
+				<input type="text" name="userName" placeholder="이름 : <%=currentUser.getUserName()%>" required> 
+				<input type="tel" name="userMobile" placeholder="전화번호 : <%=currentUser.getUserMobile()%>" required> 
+				<input type="number" name="userAge" placeholder="나이 : <%=currentUser.getUserAge()%>" required>
 				
 				<button type="submit">확인</button>
 				<a href="myPage.jsp">마이페이지로 돌아가기</a>

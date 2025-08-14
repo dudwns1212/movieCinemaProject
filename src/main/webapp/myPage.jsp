@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -142,10 +143,14 @@ body {
         <div class="edit-card">
             <h3>회원정보 수정</h3>
             <p>비밀번호를 확인하고 회원정보를 수정하세요</p>
-            <form action="checkPw.do" method="do">            	
+            <form action="checkPw.do" method="post">            	
             	<input type="password" name="pw" id="edit" placeholder="비밀번호를 입력하세요">
-            	<input type="hidden" name="<%=currentUser.getUserId()%>" value="">
+            	<input type="hidden" name="userNo" value="<%=currentUser.getUserNo()%>">
                 <button type="submit" class="card-button">정보 수정</button>
+                <br>
+                <c:if test="${not empty errorMsg}">
+            		<p class="error-msg" style="color: red;">${errorMsg}</p>
+        		</c:if>
             </form>
         </div>
 
