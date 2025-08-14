@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="movieList.MovieListVO" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,8 +14,8 @@
 	--bg: #0b0f14;
 	--card: #121821;
 	--line: #1e2631;
-	--txt: #e9eef5;
-	--muted: #9fb0c6;
+	--txt: #FFFFFF;
+	--muted: #FFFFFF;
 	--accent: #27c3ff;
 	--radius: 14px
 }
@@ -137,7 +139,12 @@ h1 {
 	padding: 8px;
 	border: 1px solid #1b2431;
 	border-radius: 12px;
-	margin-bottom: 10px
+	margin-bottom: 10px;
+	transition: border-color 0.2s;
+}
+
+.movie:hover {
+	border-color: var(--accent);
 }
 
 .movie img {
@@ -174,11 +181,16 @@ hr.line {
 	border-top: 1px solid var(--line);
 	margin: 12px 0
 }
+
+.empty-state {
+	text-align: center;
+	padding: 40px 20px;
+	color: var(--muted);
+}
 </style>
 </head>
 <body>
 <%@ include file="header.jsp" %>
-
 
 	<main class="wrap">
 		<h1>영화 예매</h1>
@@ -207,54 +219,53 @@ hr.line {
 				</div>
 			</section>
 
-			<!-- 가운데: 영화 목록 -->
-			<section class="panel">
-				<h3>영화</h3>
-				<div class="body">
-					<div class="movie">
-						<img src="images/oldboy.png" alt="올드보이">
-						<div>
-							<div>
-								<strong>올드보이</strong>
-							</div>
-							<div class="muted">느와르 120분</div>
-						</div>
-						<div class="spacer"></div>
-						<!-- seat.do로 이동 -->
-						<a href="seat.do" class="btn pill small">예매하러가기</a>
-					</div>
-
-					<div class="movie">
-						<img src="images/sing.png" alt="씽">
-						<div>
-							<div>
-								<strong>씽</strong>
-							</div>
-							<div class="muted">애니메이션 150분</div>
-						</div>
-						<div class="spacer"></div>
-						<a href="seat.do" class="btn pill small">예매하러가기</a>
-					</div>
-
-					<div class="movie">
-						<img src="images/f1.png" alt="F1 더 무비">
-						<div>
-							<div>
-								<strong>F1 더 무비</strong>
-							</div>
-							<div class="muted">액션 155분</div>
-						</div>
-						<div class="spacer"></div>
-						<a href="seat.do" class="btn pill small">예매하러가기</a>
-					</div>
-				</div>
-			</section>
+			            <!-- 가운데: 영화 목록 -->
+            <section class="panel">
+                <h3>영화</h3>
+                <div class="body">
+                    <%
+                        // 서블릿에서 전달받은 movieList를 가져옵니다
+                        List<MovieListVO> movieList = (List<MovieListVO>) request.getAttribute("movieList");
+                        
+                        // 영화 목록이 있는지 확인
+                        if (movieList != null && !movieList.isEmpty()) {
+                            // 각 영화를 반복해서 출력
+                            for (MovieListVO movie : movieList) {
+                    %>
+                                <div class="movie">
+                                	<!-- el을 사용해서 데이터베이스에 있는 모든 영화 포스터가 반복문에 의해 나오도록 설정
+                                	 	movieList 객체인 movie를 이용해서 get메서드 사용, null이 아니면 각 영화의 데이터베이스에 저장된
+                                	 	포스터의 경로가 출력-->
+                                    <img src="<%= movie.getPoster() != null ? movie.getPoster() : "asset/images/movie_default.png" %>" 
+                                         alt="<%= movie.getMovieTitle() %>"
+                                         onerror="this.src='${pageContext.request.contextPath}/asset/images/movie_default.png'">
+                                    <div>
+                                        <div>
+                                            <strong><%= movie.getMovieTitle() %></strong>
+                                        </div>
+                                        <div class="muted"><%= movie.getGenre() %> • <%= movie.getMovieTime() %>분</div>
+                                        <div class="muted">가격: <%= movie.getMoviePrice() %>원</div>
+                                    </div>
+                                    <div class="spacer"></div>
+                                    <a href="seat.do?movieId=<%= movie.getMovieId() %>" class="btn pill small">예매하러가기</a>
+                                </div>
+                    <%
+                            }
+                        } else {
+                    %>
+                            <div class="empty-state">
+                                <p>현재 상영 중인 영화가 없습니다.</p>
+                            </div>
+                    <%
+                        }
+                    %>
+                </div>
+            </section>
 
 			<!-- 오른쪽: 날짜 / 상영 시간 -->
 			<section class="panel">
 				<h3>날짜 / 상영 시간</h3>
 				<div class="body">
-					<!-- 날짜 버튼: 오른쪽 패널 안으로 옮김 -->
 					<div class="date-list"
 						style="display: flex; gap: 8px; margin-bottom: 8px;">
 						<button type="button" class="btn small pill date-btn"
@@ -266,15 +277,40 @@ hr.line {
 					<div class="muted" id="selected-date" style="margin-bottom: 8px;">날짜를
 						선택하세요</div>
 					<div class="time-list" id="time-list">
-						<!-- 동적으로 시간 버튼 넣을 자리 (나중에 서버 연동 시 사용) -->
+						<!-- 영화 선택 후 상영 시간이 동적으로 표시될 예정 -->
 					</div>
 
-					<!-- 간단: 지금은 좌석 페이지로 바로 이동하는 버튼만 제공 -->
 					<hr class="line">
-					<a href="seat.do" class="btn block">좌석 선택하러 가기</a>
+					<button type="button" class="btn block" onclick="goToSeat()">좌석 선택하러 가기</button>
 				</div>
 			</section>
 		</div>
 	</main>
+
+	<script>
+	// 좌석 선택 페이지로 이동하는 함수
+	function goToSeat() {
+		// 선택된 영화가 있는지 확인하고 이동
+		// 실제 구현에서는 선택된 영화 ID를 가져와서 전달
+		alert('영화를 먼저 선택해주세요.');
+	}
+	
+	// 날짜 버튼 클릭 이벤트
+	document.addEventListener('DOMContentLoaded', function() {
+		const dateButtons = document.querySelectorAll('.date-btn');
+		const selectedDateElement = document.getElementById('selected-date');
+		
+		dateButtons.forEach(button => {
+			button.addEventListener('click', function() {
+				// 모든 버튼의 active 클래스 제거
+				dateButtons.forEach(btn => btn.classList.remove('active'));
+				// 클릭된 버튼에 active 클래스 추가
+				this.classList.add('active');
+				// 선택된 날짜 표시
+				selectedDateElement.textContent = '선택된 날짜: ' + this.dataset.date;
+			});
+		});
+	});
+	</script>
 </body>
 </html>

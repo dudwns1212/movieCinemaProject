@@ -6,6 +6,15 @@ public class MovieListVO {
 	public int moviePrice;     // price
 	public int movieTime;      // movieTime
 	public String genre;       // genre
+	private String poster;
+
+	public String getPoster() {
+	    return poster;
+	}
+
+	public void setPoster(String poster) {
+	    this.poster = poster;
+	}
 
 	public MovieListVO() {
 		

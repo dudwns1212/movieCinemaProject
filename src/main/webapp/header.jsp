@@ -162,7 +162,7 @@ body {
 
         <!-- 언더라인 아래 버튼 메뉴 -->
         <div class="ticketing_menu">
-            <form action="reserve.do" method="get" style="display: inline;">
+            <form action="movieList.do" method="get" style="display: inline;">
                 <button type="submit">예매</button>
             </form>
             <form action="movie.do" method="get" style="display: inline;">

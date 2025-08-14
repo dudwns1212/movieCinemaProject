@@ -1,16 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
+
 <html lang="ko">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 <title>영화관 홈페이지</title>
+
 <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
 <style>
+
 /* --------------------------
-   전체 페이지 기본 스타일
+
+   전체 페이지 기본 스타일
+
 --------------------------- */
 body {
 	background-color: #000;
@@ -18,19 +32,23 @@ body {
 	font-family: 'Noto Sans KR', sans-serif;
 	margin: 0;
 }
+
 .container {
 	width: min(1200px, 92%);
 	margin: 0 auto;
 }
+
 section {
 	margin: 40px 0 28px;
 }
+
 .sec-head {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
 	margin-bottom: 14px;
 }
+
 .sec-title {
 	font-size: 22px;
 	font-weight: 800;
@@ -38,19 +56,38 @@ section {
 }
 
 /* --------------------------
-   영화 카드 그리드
+
+   영화 카드 그리드
+
 --------------------------- */
 .grid {
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
 	gap: 18px;
 }
-@media ( max-width : 1100px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-@media ( max-width : 900px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-@media ( max-width : 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+
+@media ( max-width : 1100px) {
+	.grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+@media ( max-width : 900px) {
+	.grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media ( max-width : 640px) {
+	.grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
 
 /* --------------------------
-   카드 스타일
+
+   카드 스타일
+
 --------------------------- */
 .card {
 	background: #151822;
@@ -63,32 +100,42 @@ section {
 	height: 300px;
 	transition: 0.3s;
 }
+
 .poster {
 	position: relative;
 	aspect-ratio: 2/3;
 	background: #0c0f15;
 }
+
 .poster img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
 	display: block;
 }
+
 /* 카드 후버 오버레이 */
 .overlay {
 	position: absolute;
-	top: 0; left: 0;
-	width: 100%; height: 100%;
-	background-color: rgba(128,128,128,0.5);
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(128, 128, 128, 0.5);
 	opacity: 0;
 	transition: opacity 0.3s ease;
 	z-index: 1;
 }
-.card:hover .overlay { opacity: 1; }
+
+.card:hover .overlay {
+	opacity: 1;
+}
+
 /* 순위 뱃지 */
 .rank-badge {
 	position: absolute;
-	left: 8px; top: 8px;
+	left: 8px;
+	top: 8px;
 	background: gold;
 	color: #111;
 	border-radius: 8px;
@@ -96,18 +143,22 @@ section {
 	font-weight: 900;
 	font-size: 14px;
 }
+
 /* 좋아요 버튼 */
 .like-btn {
 	position: absolute;
-	right: 8px; top: 8px;
-	background: rgba(0,0,0,.45);
-	width: 36px; height: 36px;
+	right: 8px;
+	top: 8px;
+	background: rgba(0, 0, 0, .45);
+	width: 36px;
+	height: 36px;
 	border-radius: 10px;
 	display: grid;
 	place-items: center;
 	cursor: pointer;
 	color: #fff;
 }
+
 /* 카드 후버 버튼 */
 .card-foot {
 	position: absolute;
@@ -121,10 +172,12 @@ section {
 	opacity: 0;
 	transition: opacity 0.3s ease;
 }
-.card:hover .card-foot { opacity: 1; }
 
-.btn.brand {      /* 카드 예매버튼 */
-	padding: 8px 14px;
+.card:hover .card-foot {
+	opacity: 1;
+}
+
+.btn.brand {      /* 카드 예매버튼 */ padding:8px14px;
 	border-radius: 8px;
 	background: #ff2f6e;
 	color: #fff;
@@ -133,7 +186,8 @@ section {
 	font-weight: 700;
 	transition: opacity 0.3s ease;
 }
-.btn.detail { 	/* 카드 상세정보 버튼 */
+
+.btn.detail { /* 카드 상세정보 버튼 */
 	padding: 8px 14px;
 	border-radius: 8px;
 	background: #ff2f6e;
@@ -145,13 +199,16 @@ section {
 }
 
 /* --------------------------
-   카드 아래 영화 정보
+
+   카드 아래 영화 정보
+
 --------------------------- */
 .movie-wrapper {
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
 }
+
 .movie-info {
 	display: flex;
 	justify-content: space-between;
@@ -159,252 +216,508 @@ section {
 	color: #eee;
 	padding: 0 4px;
 }
-.movie-title { font-weight: 700; }
-.movie-time { font-weight: 500; }
+
+.movie-title {
+	font-weight: 700;
+}
+
+.movie-time {
+	font-weight: 500;
+}
 
 /* --------------------------
-   캐러셀 스타일
+
+   캐러셀 스타일
+
 --------------------------- */
 .carousel-item img {
 	max-height: 400px;
 	object-fit: cover;
 }
 </style>
+
 </head>
+
 <body>
+
 	<!-- 공통 헤더 include -->
+
 	<jsp:include page="/header.jsp" />
 
+
+
 	<main class="container">
+
 		<!-- --------------------------
-		     Bootstrap 캐러셀
-		--------------------------- -->
+
+     Bootstrap 캐러셀
+
+--------------------------- -->
+
 		<div id="movieCarousel" class="carousel slide" data-bs-ride="carousel">
+
 			<div class="carousel-inner">
+
 				<div class="carousel-item active">
-					<img src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=1600&auto=format&fit=crop" class="d-block w-100" alt="슬라이드1">
+
+					<img
+						src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=1600&auto=format&fit=crop"
+						class="d-block w-100" alt="슬라이드1">
+
 					<div class="carousel-caption d-none d-md-block">
+
 						<h5>청춘은 누군가를 좋아하면서 시작된다</h5>
+
 						<p>8월 27일 대개봉 · 전체관람가</p>
+
 					</div>
+
 				</div>
+
 				<div class="carousel-item">
-					<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=1600&auto=format&fit=crop" class="d-block w-100" alt="슬라이드2">
+
+					<img
+						src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=1600&auto=format&fit=crop"
+						class="d-block w-100" alt="슬라이드2">
+
 				</div>
+
 				<div class="carousel-item">
+
 					<img src="images/popcorn.jpeg" class="d-block w-100" alt="슬라이드3">
+
 				</div>
+
 			</div>
-			<button class="carousel-control-prev" type="button" data-bs-target="#movieCarousel" data-bs-slide="prev">
+
+			<button class="carousel-control-prev" type="button"
+				data-bs-target="#movieCarousel" data-bs-slide="prev">
+
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+
 				<span class="visually-hidden">Previous</span>
+
 			</button>
-			<button class="carousel-control-next" type="button" data-bs-target="#movieCarousel" data-bs-slide="next">
+
+			<button class="carousel-control-next" type="button"
+				data-bs-target="#movieCarousel" data-bs-slide="next">
+
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+
 				<span class="visually-hidden">Next</span>
+
 			</button>
+
 		</div>
 
+
+
 		<!-- --------------------------
-		     인기 상영작 TOP 10
-		--------------------------- -->
+
+     인기 상영작 TOP 10
+
+--------------------------- -->
+
 		<section>
+
 			<div class="sec-head">
-				<div class="sec-title">인기 상영작 <span style="color:#ff2f6e">TOP 10</span></div>
+
+				<div class="sec-title">
+					인기 상영작 <span style="color: #ff2f6e">TOP 10</span>
+				</div>
+
 			</div>
 
+
+
 			<!-- 영화 카드 그리드 -->
+
 			<div class="grid" id="movieGrid">
+
 				<!-- 반복: 카드1 -->
+
 				<div class="movie-wrapper">
+
 					<article class="card">
+
 						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=600&auto=format&fit=crop" alt="영화1">
+
+							<img
+								src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=600&auto=format&fit=crop"
+								alt="영화1">
+
 							<div class="rank-badge">1</div>
+
 							<div class="like-btn" title="좋아요">♡</div>
+
 							<div class="overlay"></div>
+
 						</div>
+
 						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
 						</div>
+
 					</article>
+
 					<div class="movie-info">
-						<span class="movie-title">영화 1 제목</span>
-						<span class="movie-time">⏱ 120분</span>
+
+						<span class="movie-title">영화 1 제목</span> <span class="movie-time">⏱
+							120분</span>
+
 					</div>
+
 				</div>
+
+
 
 				<!-- 반복: 카드2 -->
+
 				<div class="movie-wrapper">
+
 					<article class="card">
+
 						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop" alt="영화2">
+
+							<img
+								src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop"
+								alt="영화2">
+
 							<div class="rank-badge">2</div>
+
 							<div class="like-btn" title="좋아요">♡</div>
+
 							<div class="overlay"></div>
+
 						</div>
+
 						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
 						</div>
+
 					</article>
+
 					<div class="movie-info">
-						<span class="movie-title">영화 2 제목</span>
-						<span class="movie-time">⏱ 110분</span>
+
+						<span class="movie-title">영화 2 제목</span> <span class="movie-time">⏱
+							110분</span>
+
 					</div>
-				</div>
-				<div class="movie-wrapper">
-					<article class="card">
-						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop" alt="영화2">
-							<div class="rank-badge">3</div>
-							<div class="like-btn" title="좋아요">♡</div>
-							<div class="overlay"></div>
-						</div>
-						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
-						</div>
-					</article>
-					<div class="movie-info">
-						<span class="movie-title">영화 3 제목</span>
-						<span class="movie-time">⏱ 110분</span>
-					</div>
-				</div>
-				<div class="movie-wrapper">
-					<article class="card">
-						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop" alt="영화2">
-							<div class="rank-badge">4</div>
-							<div class="like-btn" title="좋아요">♡</div>
-							<div class="overlay"></div>
-						</div>
-						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
-						</div>
-					</article>
-					<div class="movie-info">
-						<span class="movie-title">영화 4 제목</span>
-						<span class="movie-time">⏱ 110분</span>
-					</div>
-				</div>
-				<div class="movie-wrapper">
-					<article class="card">
-						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop" alt="영화2">
-							<div class="rank-badge">5</div>
-							<div class="like-btn" title="좋아요">♡</div>
-							<div class="overlay"></div>
-						</div>
-						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
-						</div>
-					</article>
-					<div class="movie-info">
-						<span class="movie-title">영화 5 제목</span>
-						<span class="movie-time">⏱ 110분</span>
-					</div>
-				</div>
-				<div class="movie-wrapper">
-					<article class="card">
-						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop" alt="영화2">
-							<div class="rank-badge">6</div>
-							<div class="like-btn" title="좋아요">♡</div>
-							<div class="overlay"></div>
-						</div>
-						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
-						</div>
-					</article>
-					<div class="movie-info">
-						<span class="movie-title">영화 6 제목</span>
-						<span class="movie-time">⏱ 110분</span>
-					</div>
-				</div>
-				<div class="movie-wrapper">
-					<article class="card">
-						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop" alt="영화2">
-							<div class="rank-badge">7</div>
-							<div class="like-btn" title="좋아요">♡</div>
-							<div class="overlay"></div>
-						</div>
-						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
-						</div>
-					</article>
-					<div class="movie-info">
-						<span class="movie-title">영화 7 제목</span>
-						<span class="movie-time">⏱ 110분</span>
-					</div>
-				</div>
-				<div class="movie-wrapper">
-					<article class="card">
-						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop" alt="영화2">
-							<div class="rank-badge">8</div>
-							<div class="like-btn" title="좋아요">♡</div>
-							<div class="overlay"></div>
-						</div>
-						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
-						</div>
-					</article>
-					<div class="movie-info">
-						<span class="movie-title">영화 8 제목</span>
-						<span class="movie-time">⏱ 110분</span>
-					</div>
-				</div>
-				<div class="movie-wrapper">
-					<article class="card">
-						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop" alt="영화2">
-							<div class="rank-badge">9</div>
-							<div class="like-btn" title="좋아요">♡</div>
-							<div class="overlay"></div>
-						</div>
-						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
-						</div>
-					</article>
-					<div class="movie-info">
-						<span class="movie-title">영화 9 제목</span>
-						<span class="movie-time">⏱ 110분</span>
-					</div>
-				</div>
-				<div class="movie-wrapper">
-					<article class="card">
-						<div class="poster">
-							<img src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop" alt="영화2">
-							<div class="rank-badge">10</div>
-							<div class="like-btn" title="좋아요">♡</div>
-							<div class="overlay"></div>
-						</div>
-						<div class="card-foot">
-							<a class="btn brand" href="reserve.do">예매하기</a>
-							<a class="btn detail" href="#">상세정보</a>
-						</div>
-					</article>
-					<div class="movie-info">
-						<span class="movie-title">영화 10 제목</span>
-						<span class="movie-time">⏱ 110분</span>
-					</div>
+
 				</div>
 
-				
-			</div> <!-- /grid -- 카드를 더 만들고 싶을시 바로위에 복붙---> 
+				<div class="movie-wrapper">
+
+					<article class="card">
+
+						<div class="poster">
+
+							<img
+								src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop"
+								alt="영화2">
+
+							<div class="rank-badge">3</div>
+
+							<div class="like-btn" title="좋아요">♡</div>
+
+							<div class="overlay"></div>
+
+						</div>
+
+						<div class="card-foot">
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
+						</div>
+
+					</article>
+
+					<div class="movie-info">
+
+						<span class="movie-title">영화 3 제목</span> <span class="movie-time">⏱
+							110분</span>
+
+					</div>
+
+				</div>
+
+				<div class="movie-wrapper">
+
+					<article class="card">
+
+						<div class="poster">
+
+							<img
+								src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop"
+								alt="영화2">
+
+							<div class="rank-badge">4</div>
+
+							<div class="like-btn" title="좋아요">♡</div>
+
+							<div class="overlay"></div>
+
+						</div>
+
+						<div class="card-foot">
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
+						</div>
+
+					</article>
+
+					<div class="movie-info">
+
+						<span class="movie-title">영화 4 제목</span> <span class="movie-time">⏱
+							110분</span>
+
+					</div>
+
+				</div>
+
+				<div class="movie-wrapper">
+
+					<article class="card">
+
+						<div class="poster">
+
+							<img
+								src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop"
+								alt="영화2">
+
+							<div class="rank-badge">5</div>
+
+							<div class="like-btn" title="좋아요">♡</div>
+
+							<div class="overlay"></div>
+
+						</div>
+
+						<div class="card-foot">
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
+						</div>
+
+					</article>
+
+					<div class="movie-info">
+
+						<span class="movie-title">영화 5 제목</span> <span class="movie-time">⏱
+							110분</span>
+
+					</div>
+
+				</div>
+
+				<div class="movie-wrapper">
+
+					<article class="card">
+
+						<div class="poster">
+
+							<img
+								src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop"
+								alt="영화2">
+
+							<div class="rank-badge">6</div>
+
+							<div class="like-btn" title="좋아요">♡</div>
+
+							<div class="overlay"></div>
+
+						</div>
+
+						<div class="card-foot">
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
+						</div>
+
+					</article>
+
+					<div class="movie-info">
+
+						<span class="movie-title">영화 6 제목</span> <span class="movie-time">⏱
+							110분</span>
+
+					</div>
+
+				</div>
+
+				<div class="movie-wrapper">
+
+					<article class="card">
+
+						<div class="poster">
+
+							<img
+								src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop"
+								alt="영화2">
+
+							<div class="rank-badge">7</div>
+
+							<div class="like-btn" title="좋아요">♡</div>
+
+							<div class="overlay"></div>
+
+						</div>
+
+						<div class="card-foot">
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
+						</div>
+
+					</article>
+
+					<div class="movie-info">
+
+						<span class="movie-title">영화 7 제목</span> <span class="movie-time">⏱
+							110분</span>
+
+					</div>
+
+				</div>
+
+				<div class="movie-wrapper">
+
+					<article class="card">
+
+						<div class="poster">
+
+							<img
+								src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop"
+								alt="영화2">
+
+							<div class="rank-badge">8</div>
+
+							<div class="like-btn" title="좋아요">♡</div>
+
+							<div class="overlay"></div>
+
+						</div>
+
+						<div class="card-foot">
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
+						</div>
+
+					</article>
+
+					<div class="movie-info">
+
+						<span class="movie-title">영화 8 제목</span> <span class="movie-time">⏱
+							110분</span>
+
+					</div>
+
+				</div>
+
+				<div class="movie-wrapper">
+
+					<article class="card">
+
+						<div class="poster">
+
+							<img
+								src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop"
+								alt="영화2">
+
+							<div class="rank-badge">9</div>
+
+							<div class="like-btn" title="좋아요">♡</div>
+
+							<div class="overlay"></div>
+
+						</div>
+
+						<div class="card-foot">
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
+						</div>
+
+					</article>
+
+					<div class="movie-info">
+
+						<span class="movie-title">영화 9 제목</span> <span class="movie-time">⏱
+							110분</span>
+
+					</div>
+
+				</div>
+
+				<div class="movie-wrapper">
+
+					<article class="card">
+
+						<div class="poster">
+
+							<img
+								src="https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=600&auto=format&fit=crop"
+								alt="영화2">
+
+							<div class="rank-badge">10</div>
+
+							<div class="like-btn" title="좋아요">♡</div>
+
+							<div class="overlay"></div>
+
+						</div>
+
+						<div class="card-foot">
+
+							<a class="btn brand" href="reserve.do">예매하기</a> <a
+								class="btn detail" href="#">상세정보</a>
+
+						</div>
+
+					</article>
+
+					<div class="movie-info">
+
+						<span class="movie-title">영화 10 제목</span> <span class="movie-time">⏱
+							110분</span>
+
+					</div>
+
+				</div>
+
+
+
+
+			</div>
+			<!-- /grid -- 카드를 더 만들고 싶을시 바로위에 복붙--->
+			 
+
 		</section>
+
 	</main>
 
+
+
 	<!-- Bootstrap JS -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>
