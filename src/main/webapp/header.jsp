@@ -13,7 +13,11 @@
     margin: 0 auto;
     background-color: #000; /* 1200px 안쪽만 검정 */
     color: #eee;
+<<<<<<< Updated upstream
     padding: 20px 0 60px; /* 아래쪽 넓혀서 버튼 공간 확보 */
+=======
+    padding: 3px 0 6px; /* 아래쪽 넓혀서 버튼 공간 확보 */
+>>>>>>> Stashed changes
     position: relative;
     text-align: center;
     box-sizing: border-box;
@@ -113,4 +117,8 @@ h1 {
             </form>
         </div>
     </div>
+<<<<<<< Updated upstream
 </div>
+=======
+</div>
+>>>>>>> Stashed changes
