@@ -1,10 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
 /* 헤더 컨테이너 */
+body {
+	background-color: black;
+}
 .header-container {
     width: 100%;
-    background-color: transparent; /* 전체는 투명 */
+    background-color: black;
     font-family: 'Noto Sans KR', sans-serif;
 }
 
@@ -54,6 +59,7 @@
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
+    margin-top: 15px
 }
 
 .user-section button:hover {
@@ -62,9 +68,10 @@
 
 /* 사용자 이름 스타일 */
 .user-name {
-    color: #4ECDC4;
+	color: orange;
     font-weight: bold;
     margin-right: 10px;
+    margin-top: 14px;
 }
 
 /* 언더라인 아래 버튼 메뉴 */
@@ -85,6 +92,20 @@
     font-weight: 700;
     transition: 0.3s;
 }
+.logo button {
+	position: absolute;
+    left: 6px;
+    top: 16px;
+    background-color: black;
+    border: none;
+    margin-top: 2px;
+}
+.logo img {
+	
+	width: 70px;
+	height: 70px;
+	border: none;
+}
 
 .ticketing_menu button:hover {
     background-color: #333;
@@ -93,7 +114,14 @@
 
 <div class="header-container">
     <div class="header-inner">
+    	<div class="logo">
+	    		<form action="home.do">
+	    			<button type="submit" ><img src="images/cinemaLogo.png"></button>
+	    		</form>
+	    </div>
+	    
         <div class="user-section">
+	        
             <% 
             // 세션에서 로그인 사용자 정보 가져오기
             userList.UserListVO loginUser = (userList.UserListVO)session.getAttribute("loginUser");
@@ -134,14 +162,14 @@
 
         <!-- 언더라인 아래 버튼 메뉴 -->
         <div class="ticketing_menu">
-            <form action="seat.do" method="get" style="display: inline;">
+            <form action="reserve.do" method="get" style="display: inline;">
                 <button type="submit">예매</button>
             </form>
             <form action="movie.do" method="get" style="display: inline;">
                 <button type="submit">영화</button>
             </form>
-            <form action="cinema.do" method="get" style="display: inline;">
-                <button type="submit">영화관</button>
+            <form action="event.do" method="get" style="display: inline;">
+                <button type="submit">이벤트</button>
             </form>
         </div>
     </div>

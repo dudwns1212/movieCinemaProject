@@ -17,7 +17,7 @@ public class MovieListDAO {
         ResultSet rs = null;
         
         try {
-            String dbURL = "jdbc:mysql://localhost:3306/mydatabase?serverTimezone=UTC";
+            String dbURL = "jdbc:mysql://localhost:3306/teamproject?serverTimezone=UTC";
             String dbID = "root";
             String dbPassword = "yourpassword";
             
@@ -25,7 +25,15 @@ public class MovieListDAO {
             conn = DriverManager.getConnection(dbURL, dbID, dbPassword);
             
             // movies 테이블의 모든 영화를 조회하는 SQL
-            String sql = "SELECT * FROM movies ORDER BY movie_no DESC";
+            String sql = 
+                "SELECT " +
+                "  movie_id AS movieId, " +      // ← VO와 맞추는 별칭
+                "  title    AS movieTitle, " +
+                "  price    AS moviePrice, " +
+                "  movieTime, " +
+                "  genre " +
+                "FROM movies " +
+                "ORDER BY movie_id DESC";       
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             
@@ -34,10 +42,9 @@ public class MovieListDAO {
                 MovieListVO movie = new MovieListVO();
                 
                 // DB의 컬럼명과 VO의 set 메소드를 일치시켜주는 것이 중요해요.
-                // 예를 들어 DB 컬럼명이 'movie_no'라면 rs.getInt("movie_no")로 값을 가져옵니다.
-                movie.setMovieNo(rs.getInt("movie_no"));
-                movie.setMovieTitle(rs.getString("title"));
-                movie.setMoviePrice(rs.getInt("price"));
+                movie.setMovieId(rs.getInt("movieId"));
+                movie.setMovieTitle(rs.getString("movieTitle"));
+                movie.setMoviePrice(rs.getInt("moviePrice"));
                 movie.setMovieTime(rs.getInt("movieTime")); // DB 컬럼명이 movie_time 이라면 "movie_time"
                 movie.setGenre(rs.getString("genre"));
                 

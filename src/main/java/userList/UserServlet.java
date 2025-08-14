@@ -73,7 +73,8 @@ public class UserServlet extends HttpServlet {
 		} else if (uri.endsWith("update.do")) {
 			
 		} else if (uri.endsWith("checkPw.do")) {
-			String pw = req.getParameter("pw");
+			String un = req.getParameter("userId");
+			UserListVO user = udao.checkUser(un);
 			forwardPage = "/update.jsp";
 		} else if (uri.endsWith("seat.do")) {
 			forwardPage = "/seat.jsp";
@@ -86,6 +87,8 @@ public class UserServlet extends HttpServlet {
 		    forwardPage = "/home.jsp";
 		} else if (uri.endsWith("myPage.do")) {
 			forwardPage = "/myPage.jsp";
+		} else if (uri.endsWith("event.do")) {
+			forwardPage = "/event.jsp";
 		}
 
 		req.getRequestDispatcher(forwardPage).forward(req, resp);

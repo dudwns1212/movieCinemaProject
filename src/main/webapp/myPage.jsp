@@ -109,11 +109,10 @@ body {
 }
 
 #edit {
-	height: 20px;
-	width: 88%;
+	height: 40px;
+	width: 100%;
 	margin-bottom:5px;
-	padding: 10px 15px;
-	align-text: center;
+	padding: 12px 20px;
 	border-radius: 10px
 }
 
@@ -145,7 +144,7 @@ body {
             <p>비밀번호를 확인하고 회원정보를 수정하세요</p>
             <form action="checkPw.do" method="do">            	
             	<input type="password" name="pw" id="edit" placeholder="비밀번호를 입력하세요">
-            	<input type="hidden" name="user_id">
+            	<input type="hidden" name="<%=currentUser.getUserId()%>" value="">
                 <button type="submit" class="card-button">정보 수정</button>
             </form>
         </div>

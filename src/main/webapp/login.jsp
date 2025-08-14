@@ -24,7 +24,7 @@
         height: calc(100vh - 80px); /* 헤더 높이 빼고 중앙 정렬 */
         
         /* 영화 포스터 배경 이미지 추가 */
-        background-image: url('path/to/your/movie-poster.jpg'); 
+        background-image: url('images/infinity.png'); 
         background-size: cover; /* 이미지가 div를 꽉 채우도록 설정 */
         background-position: center; /* 이미지를 중앙에 배치 */
         background-repeat: no-repeat; /* 이미지 반복 방지 */
@@ -104,7 +104,7 @@
 </head>
 <body>
 
-<%@ include file="header.jsp" %>  
+<jsp:include page="/header.jsp" /> 
 <div class="login-container">
     <div class="login-box">
         <h1>로그인</h1>

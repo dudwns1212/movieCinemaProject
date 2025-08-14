@@ -65,6 +65,34 @@ public class UserListDAO {
         return false;  // 실패 시 false 반환
     }
     
+    public UserListVO checkUser(String un) {
+    	String sql = "SELECT * FROM users WHERE password = ?";
+
+        //try-with-resources 문법으로 try문이 끝나면 자동으로 닫음
+        try (Connection conn = getConnection();
+             PreparedStatement psmt = conn.prepareStatement(sql)) {
+
+            psmt.setString(1, un);  // 두 번째 ?에 pw 세팅
+
+            // ResultSet은 try 안에서 별도 선언해서 처리
+            try (ResultSet rs = psmt.executeQuery()) {
+                if (rs.next()) {  // 일치하는 사용자 존재하면
+                    UserListVO vo = new UserListVO();
+                    vo.setUserNo(rs.getInt("user_id"));        // DB의 user_no
+                    vo.setUserId(rs.getString("id"));          // DB의 id
+                    vo.setUserPassword(rs.getString("password")); // DB의 password
+                    vo.setUserName(rs.getString("name"));      // DB의 name
+                    vo.setUserAge(rs.getInt("age"));           // DB의 age
+                    vo.setUserMobile(rs.getString("mobile"));  // DB의 mobile
+                    return vo;  // 완성된 VO 객체 반환 (로그인 성공)
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 발생 시 콘솔에 출력
+        }
+        return null;  // 일치하는 사용자 없거나 에러 발생 시 null 반환 (로그인 실패)
+    }
+    
     private static Connection getConnection() throws Exception {
         Context initContext = new InitialContext();
         Context envContext = (Context) initContext.lookup("java:comp/env");

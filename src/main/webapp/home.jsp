@@ -6,9 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>영화관 홈페이지</title>
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <style>
 body {
     margin: 0;
@@ -33,7 +30,7 @@ main {
 </head>
 <body>
 
-<%@ include file="header.jsp" %>
+<jsp:include page="/header.jsp" />
 
 <main>
     <!-- Bootstrap 캐러셀 -->

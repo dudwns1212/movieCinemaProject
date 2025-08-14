@@ -1,7 +1,7 @@
 package movieList;
 //무비VO 수정 완
 public class MovieListVO {
-	public int movieNo;        // movie_no (auto_increment)
+	public int movieId;        // movie_Id (auto_increment)
 	public String movieTitle;  // title
 	public int moviePrice;     // price
 	public int movieTime;      // movieTime
@@ -11,12 +11,12 @@ public class MovieListVO {
 		
 	}
 	
-	public int getMovieNo() {
-		return movieNo;
+	public int getMovieId() {
+		return movieId;
 	}
 	
-	public void setMovieNo(int movieNo) {
-		this.movieNo = movieNo;
+	public void setMovieId(int movieId) {
+		this.movieId = movieId;
 	}
 	
 	public String getMovieTitle() {
