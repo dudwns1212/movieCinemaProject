@@ -72,8 +72,9 @@ public class UserServlet extends HttpServlet {
 			}
 		} else if (uri.endsWith("update.do")) {
 			
-		} else if (uri.endsWith("movie.do")) {
-			forwardPage = "/movie.jsp";
+		} else if (uri.endsWith("checkPw.do")) {
+			String pw = req.getParameter("pw");
+			forwardPage = "/update.jsp";
 		} else if (uri.endsWith("seat.do")) {
 			forwardPage = "/seat.jsp";
 		} else if (uri.endsWith("cinema.do")) {

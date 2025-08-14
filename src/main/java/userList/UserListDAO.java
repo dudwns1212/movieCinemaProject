@@ -26,7 +26,7 @@ public class UserListDAO {
             try (ResultSet rs = psmt.executeQuery()) {
                 if (rs.next()) {  // 일치하는 사용자 존재하면
                     UserListVO vo = new UserListVO();
-                    vo.setUserNo(rs.getInt("user_no"));        // DB의 user_no
+                    vo.setUserNo(rs.getInt("user_id"));        // DB의 user_no
                     vo.setUserId(rs.getString("id"));          // DB의 id
                     vo.setUserPassword(rs.getString("password")); // DB의 password
                     vo.setUserName(rs.getString("name"));      // DB의 name

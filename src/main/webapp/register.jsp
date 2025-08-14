@@ -13,6 +13,7 @@
     <h2>회원가입</h2>
 
     <form action="register.do">
+    <input type=hidden name="action" value="register">
         <p>
             <label for="userId">아이디:</label><br>
             <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요" required>

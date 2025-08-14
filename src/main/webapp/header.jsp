@@ -93,7 +93,6 @@
 
 <div class="header-container">
     <div class="header-inner">
-        <!-- 로그인 상태에 따른 버튼 표시 -->
         <div class="user-section">
             <% 
             // 세션에서 로그인 사용자 정보 가져오기
