@@ -135,7 +135,7 @@ public class UserServlet extends HttpServlet {
 				boolean success = udao.delete(userId);
 		        if (success) {
 		            // 성공 시 세션 무효화
-		             session.invalidate();
+		            session.invalidate();
 		            
 		            // 성공 메시지와 함께 홈으로 리다이렉트
 		            resp.sendRedirect("home.do?message=withdrawal_success");
