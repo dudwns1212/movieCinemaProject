@@ -1,0 +1,575 @@
+<%@page import="cinemaList.CinemaListVO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<<<<<<< .mine
+<%@ page import="java.util.List"%>
+<%@ page import="movieList.MovieListVO"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+||||||| .r9
+=======
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ page import="java.util.List"%>
+<%@ page import="movieList.MovieListVO"%>
+>>>>>>> .r10
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>예매</title>
+<style>
+:root {
+	--bg: #000000;
+	--card: #ffffff;
+	--line: #e0e0e0;
+	--txt: #333333;
+	--muted: #666666;
+	--accent: #ff6b35;
+	--radius: 8px;
+	--red-accent: #ff0000;
+}
+
+* {
+	box-sizing: border-box
+}
+
+body {
+	margin: 0;
+	background-color: var(--bg);
+	color: var(--txt);
+	font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR",
+		sans-serif;
+	min-height: 100vh;
+}
+
+a {
+	text-decoration: none;
+	color: inherit
+}
+
+.wrap {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px 16px;
+}
+
+h1 {
+	font-size: 24px;
+	margin: 20px 0;
+	color: white;
+	font-weight: 700;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: 280px 1fr 300px;
+	gap: 20px;
+}
+
+.panel {
+	background: var(--card);
+	color: var(--txt);
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	overflow: hidden;
+	min-height: 600px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.panel h3 {
+	margin: 0;
+	padding: 40px;
+	border-bottom: 1px solid var(--line);
+	font-size: 18px;
+	font-weight: 600;
+	background-color: #f8f9fa;
+}
+
+.panel .body {
+	padding: 20px;
+	max-height: 70vh;
+	overflow: auto;
+}
+
+/* 버튼 스타일 */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 12px 16px;
+	border-radius: 6px;
+	border: 1px solid var(--line);
+	background: white;
+	color: var(--txt);
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.btn:hover {
+	background-color: #f8f9fa;
+	border-color: var(--accent);
+}
+
+.btn.active {
+	background-color: var(--accent);
+	color: white;
+	border-color: var(--accent);
+}
+
+.btn.block {
+	display: flex;
+	width: 100%;
+	margin-bottom: 8px;
+}
+
+.btn.ghost {
+	background: transparent;
+	border: 1px solid #ddd;
+}
+
+.btn.ghost:hover {
+	background: #f8f9fa;
+}
+
+.btn.pill {
+	border-radius: 20px;
+}
+
+.btn.small {
+	padding: 8px 12px;
+	font-size: 14px;
+}
+
+.btn[disabled] {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* 목록 */
+.list {
+	display: grid;
+	gap: 8px;
+}
+
+.tag {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--txt);
+	margin: 16px 0 8px 0;
+}
+
+/* 영화 카드 */
+.movie {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	padding: 16px;
+	border: 2px solid var(--line);
+	border-radius: var(--radius);
+	margin-bottom: 12px;
+	transition: all 0.2s;
+	background: white;
+	cursor: pointer;
+}
+
+.movie.selected {
+	border-color: var(--accent);
+	box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.movie:hover {
+	border-color: var(--accent);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.movie img {
+	width: 60px;
+	height: 80px;
+	object-fit: cover;
+	border-radius: 4px;
+	background: #f0f0f0;
+}
+
+.movie .content {
+	flex: 1;
+}
+
+.movie .title {
+	font-weight: 600;
+	font-size: 16px;
+	margin-bottom: 4px;
+	color: var(--txt);
+}
+
+.movie .info {
+	font-size: 14px;
+	color: var(--muted);
+	margin-bottom: 2px;
+}
+
+/* 날짜 선택 */
+.date-list {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 16px;
+	flex-wrap: wrap;
+}
+
+.date-btn {
+	background: white;
+	border: 1px solid var(--line);
+	color: var(--txt);
+	padding: 10px 16px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: all 0.2s;
+}
+
+.date-btn:hover {
+	border-color: var(--accent);
+}
+
+.date-btn.active {
+	background: var(--accent);
+	color: white;
+	border-color: var(--accent);
+}
+
+/* 시간 목록 */
+.time-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+.time {
+	padding: 8px 12px;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	background: white;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.time.active {
+	background: var(--accent);
+	color: white;
+	border-color: var(--accent);
+}
+
+.time:hover {
+	border-color: var(--accent);
+	background: #fff5f0;
+}
+
+.time.active:hover {
+	background: #e55a2b; /* 활성화된 상태에서 호버 시 약간 더 어둡게 */
+}
+
+.selected-date {
+	color: var(--muted);
+	font-size: 14px;
+	margin-bottom: 16px;
+	padding: 8px 0;
+}
+
+hr.line {
+	border: 0;
+	border-top: 1px solid var(--line);
+	margin: 20px 0;
+}
+
+.empty-state {
+	text-align: center;
+	padding: 60px 20px;
+	color: var(--muted);
+}
+
+/* 최종 버튼 */
+.final-btn {
+	background: var(--red-accent);
+	color: white;
+	border: none;
+	padding: 16px;
+	border-radius: 6px;
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s;
+	width: 100%;
+	margin-top: 20px;
+}
+
+.final-btn:hover {
+	background: #e60000;
+	transform: translateY(-1px);
+}
+
+/* ★★★ 핵심 수정: 지역/영화관 선택 스타일 블록 ★★★ */
+.region-section .btn {
+	text-align: left;
+	justify-content: flex-start;
+}
+
+.region-section .btn:hover, .region-section .btn.active {
+	background: var(--accent);
+	color: white;
+}
+
+.cinema-section .btn {
+	text-align: left;
+	justify-content: flex-start;
+	background: #f8f9fa;
+}
+
+.cinema-section .btn:hover, .cinema-section .btn.active {
+	background: var(--accent);
+<<<<<<< .mine
+	color:;
+||||||| .r9
+=======
+	color: white;
+	border-color: var(--accent);
+>>>>>>> .r10
+}
+</style>
+</head>
+<body>
+	<%@ include file="header.jsp"%>
+
+	<main class="wrap">
+		<div class="grid">
+			<section class="panel">
+				<h3>영화관</h3>
+				<div class="body">
+					<div class="region-section">
+						<div class="tag">지역</div>
+						<div class="list">
+							<button type="button" class="btn block">서울</button>
+							<button type="button" class="btn block">경기/인천</button>
+							<button type="button" class="btn block">충청/대전</button>
+							<button type="button" class="btn block">전라/광주</button>
+							<button type="button" class="btn block">경북/대구</button>
+							<button type="button" class="btn block">경남/부산/울산</button>
+						</div>
+					</div>
+					<hr class="line">
+					<div class="cinema-section">
+						<div class="tag">영화관</div>
+						<div class="list">
+							<c:forEach var="cinema" items="${cinemaList}">
+								<button type="button" class="btn block ghost">${cinema.name}</button>
+							</c:forEach>
+						</div>
+
+					</div>
+				</div>
+			</section>
+
+			<section class="panel">
+				<h3>영화 선택</h3>
+				<div class="body">
+<<<<<<< .mine
+					<%
+					List<MovieListVO> movieList = (List<MovieListVO>) request.getAttribute("movieList");
+
+					if (movieList != null && !movieList.isEmpty()) {
+						for (MovieListVO movie : movieList) {
+					%>
+					<div class="movie">
+						<img
+							src="<%= movie.getPoster() != null ? movie.getPoster() : "asset/images/movie_default.png" %>"
+							alt="<%= movie.getMovieTitle() %>"
+							onerror="this.src='${pageContext.request.contextPath}/asset/images/movie_default.png'">
+						<div class="content">
+							<div class="title"><%=movie.getMovieTitle()%></div>
+							<div class="info"><%=movie.getGenre()%>
+								•
+								<%=movie.getMovieTime()%>분
+							</div>
+							<div class="price"><%=movie.getMoviePrice()%>원
+							</div>
+						</div>
+						<a href="seat.do?movieId=<%=movie.getMovieId()%>" class="book-btn">선택</a>
+					</div>
+					<%
+					}
+					} else {
+||||||| .r9
+=======
+					<% 
+					List<MovieListVO> movieList = (List<MovieListVO>) request.getAttribute("movieList");
+
+					if (movieList != null && !movieList.isEmpty()) {
+						for (MovieListVO movie : movieList) {
+>>>>>>> .r10
+					%>
+<<<<<<< .mine
+					<div class="empty-state">
+						<p>현재 상영 중인 영화가 없습니다.</p>
+					</div>
+||||||| .r9
+=======
+					<div class="movie">
+						<img
+							src="<%= movie.getPoster() != null ? movie.getPoster() : "asset/images/movie_default.png" %>"
+							alt="<%= movie.getMovieTitle() %>"
+							onerror="this.src='${pageContext.request.contextPath}/asset/images/movie_default.png'">
+						<div class="content">
+							<div class="title"><%=movie.getMovieTitle()%></div>
+							<div class="info"><%=movie.getGenre()%>
+								•
+								<%=movie.getMovieTime()%>분
+							</div>
+>>>>>>> .r10
+<<<<<<< .mine
+					<%
+					}
+					%>
+||||||| .r9
+=======
+						</div>
+					</div>
+					<% 
+ 						} 
+ 					} else { 
+ 					%>
+					<div class="empty-state">
+						<p>현재 상영 중인 영화가 없습니다.</p>
+					</div>
+					<% 
+ 					} 
+ 					%>
+>>>>>>> .r10
+				</div>
+			</section>
+
+			<section class="panel">
+				<h3>2025-08-15(오늘)</h3>
+				<div class="body">
+					<div class="tag">날짜</div>
+					<div class="date-list">
+						<button type="button" class="date-btn active"
+							data-date="2025-08-15">
+							15<br> <small>오늘</small>
+						</button>
+						<button type="button" class="date-btn" data-date="2025-08-16">
+							16<br> <small>토</small>
+						</button>
+						<button type="button" class="date-btn" data-date="2025-08-17">
+							17<br> <small>일</small>
+						</button>
+						<button type="button" class="date-btn" data-date="2025-08-18">
+							18<br> <small>월</small>
+						</button>
+						<button type="button" class="date-btn" data-date="2025-08-19">
+							19<br> <small>화</small>
+						</button>
+					</div>
+
+					<div class="selected-date" id="selected-date">2025-08-15 (오늘)
+						선택됨</div>
+
+					<div class="tag">시간</div>
+					<div class="time-list" id="time-list">
+						<div class="time">10:30</div>
+						<div class="time">13:00</div>
+						<div class="time">15:30</div>
+						<div class="time">18:00</div>
+						<div class="time">20:30</div>
+					</div>
+
+					<button type="button" class="final-btn" onclick="goToSeat()">좌석
+						선택</button>
+				</div>
+			</section>
+		</div>
+	</main>
+
+	<script> 
+ 	function goToSeat() { 
+ 		const selectedMovie = document.querySelector('.movie.selected'); 
+ 		if (!selectedMovie) { 
+ 			alert('영화를 먼저 선택해주세요.'); 
+ 			return; 
+ 		} 
+ 		 
+ 		const selectedTime = document.querySelector('.time.active'); 
+ 		if (!selectedTime) { 
+ 			alert('상영 시간을 선택해주세요.'); 
+ 			return; 
+ 		} 
+
+ 		alert('좌석 선택 페이지로 이동합니다!'); 
+ 		// window.location.href = 'seat.jsp'; 
+ 	} 
+ 	 
+ 	document.addEventListener('DOMContentLoaded', function() { 
+ 		// 날짜 버튼 클릭 이벤트 
+ 		const dateButtons = document.querySelectorAll('.date-btn'); 
+ 		const selectedDateElement = document.getElementById('selected-date'); 
+ 		 
+ 		dateButtons.forEach(button => { 
+ 			button.addEventListener('click', function(event) { 
+ 				event.preventDefault(); // 페이지 새로고침 방지
+ 				dateButtons.forEach(btn => btn.classList.remove('active')); 
+ 				this.classList.add('active'); 
+ 				 
+ 				const date = this.dataset.date; 
+ 				const day = this.innerHTML.split('<br>')[1].replace('<small>', '').replace('</small>', ''); 
+ 				selectedDateElement.textContent = `${date} (${day}) 선택됨`; 
+ 			}); 
+ 		}); 
+ 	 
+ 		// 지역 버튼 클릭 이벤트 (정상 동작)
+ 		const regionButtons = document.querySelectorAll('.region-section .btn'); 
+ 		regionButtons.forEach(button => { 
+ 			button.addEventListener('click', function(event) { 
+ 				event.preventDefault(); 
+ 				regionButtons.forEach(btn => btn.classList.remove('active')); 
+ 				this.classList.add('active'); 
+ 			}); 
+ 		}); 
+ 	 
+ 		// 영화관 버튼 클릭 이벤트 (정상 동작)
+ 		const cinemaButtons = document.querySelectorAll('.cinema-section .btn'); 
+ 		cinemaButtons.forEach(button => { 
+ 			button.addEventListener('click', function(event) { 
+ 				event.preventDefault(); 
+ 				cinemaButtons.forEach(btn => btn.classList.remove('active')); 
+ 				this.classList.add('active'); 
+ 			}); 
+ 		}); 
+ 	 
+ 		// 시간 선택 이벤트
+ 		const timeButtons = document.querySelectorAll('.time'); 
+ 		timeButtons.forEach(button => { 
+ 			button.addEventListener('click', function(event) { 
+ 				event.preventDefault(); 
+ 				timeButtons.forEach(btn => btn.classList.remove('active')); 
+ 				this.classList.add('active'); 
+ 			}); 
+ 		}); 
+ 	 
+ 		// 영화 선택 이벤트 
+ 		const movieElements = document.querySelectorAll('.movie'); 
+ 		movieElements.forEach(movie => { 
+ 			movie.addEventListener('click', function(event) { 
+ 				event.preventDefault(); 
+ 				movieElements.forEach(el => el.classList.remove('selected')); 
+ 				this.classList.add('selected'); 
+ 			}); 
+ 		}); 
+ 	}); 
+ </script>
+
+</body>
+</html>
