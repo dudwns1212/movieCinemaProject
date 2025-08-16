@@ -11,6 +11,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>예매</title>
+<!-- jQuery 라이브러리 추가 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <style>
 :root {
 	--bg: #000000;
@@ -262,7 +264,7 @@ h1 {
 }
 
 .time.active:hover {
-	background: #e55a2b; /* 활성화된 상태에서 호버 시 약간 더 어둡게 */
+	background: #e55a2b;
 }
 
 .selected-date {
@@ -339,18 +341,22 @@ hr.line {
 					<div class="region-section">
 						<div class="tag">지역</div>
 						<div class="list">
+							<c:set var="locations" value="" />
 							<c:forEach var="cinema" items="${cinemaList}">
-								<button type="button" class="btn block">${cinema.location}</button>
+								<c:if test="${not fn:contains(locations, cinema.location)}">
+									<button type="button" class="btn block location-btn" data-location="${cinema.location}">
+										${cinema.location}
+									</button>
+									<c:set var="locations" value="${locations}${cinema.location}," />
+								</c:if>
 							</c:forEach>
 						</div>
 					</div>
 					<hr class="line">
 					<div class="cinema-section">
 						<div class="tag">영화관</div>
-						<div class="list">
-							<c:forEach var="cinema" items="${cinemaList}">
-								<button type="button" class="btn block ghost">${cinema.name}</button>
-							</c:forEach>
+						<div class="list" id="cinemaList">
+							<div class="empty-state">지역을 먼저 선택해주세요</div>
 						</div>
 					</div>
 				</div>
@@ -424,83 +430,92 @@ hr.line {
 			</section>
 		</div>
 	</main>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			// 1. 지역 버튼 클릭 이벤트
+			$('.location-btn').click(function() {
+				console.log('지역 버튼 클릭됨');
+				
+				let location = $(this).data('location');
+				console.log('선택된 지역:', location);
+				
+				// Ajax 요청
+				$.ajax({
+					url: 'CinemaServlet',           
+					data: {'location': location},        
+					dataType: "json",                    
+					success: changeCinema,
+					error: function(xhr, status, error) {
+						console.error('Ajax 에러:', error);
+						console.error('응답:', xhr.responseText);
+					}
+				});
+			});
 
-	<script> 
- 	function goToSeat() { 
- 		const selectedMovie = document.querySelector('.movie.selected'); 
- 		if (!selectedMovie) { 
- 			alert('영화를 먼저 선택해주세요.'); 
- 			return; 
- 		} 
- 		 
- 		const selectedTime = document.querySelector('.time.active'); 
- 		if (!selectedTime) { 
- 			alert('상영 시간을 선택해주세요.'); 
- 			return; 
- 		} 
+			// 2. 영화관 데이터 업데이트 함수
+			function changeCinema(data) {
+				console.log('Ajax 성공! 받은 데이터:', data);
+				console.log('데이터 타입:', typeof data);
+				console.log('데이터 키 개수:', Object.keys(data).length);
+				
+				let cinemaListDiv = $('#cinemaList');
+				cinemaListDiv.empty();
+				
+				if(Object.keys(data).length === 0) {
+					cinemaListDiv.append('<div class="empty-state">해당 지역에 영화관이 없습니다</div>');
+					return;
+				}
+				
+				for(let key in data) {
+					let newCinemaButton = `<button type="button" class="btn block ghost cinema-btn" data-cinema-id="${key}">
+											${data[key]}
+										   </button>`;
+					cinemaListDiv.append(newCinemaButton);
+				}
+			}
 
- 		alert('좌석 선택 페이지로 이동합니다!'); 
- 		// window.location.href = 'seat.jsp'; 
- 	} 
- 	 
- 	document.addEventListener('DOMContentLoaded', function() { 
- 		// 날짜 버튼 클릭 이벤트 
- 		const dateButtons = document.querySelectorAll('.date-btn'); 
- 		const selectedDateElement = document.getElementById('selected-date'); 
- 		 
- 		dateButtons.forEach(button => { 
- 			button.addEventListener('click', function(event) { 
- 				event.preventDefault(); // 페이지 새로고침 방지
- 				dateButtons.forEach(btn => btn.classList.remove('active')); 
- 				this.classList.add('active'); 
- 				 
- 				const date = this.dataset.date; 
- 				const day = this.innerHTML.split('<br>')[1].replace('<small>', '').replace('</small>', ''); 
- 				selectedDateElement.textContent = `${date} (${day}) 선택됨`; 
- 			}); 
- 		}); 
- 	 
- 		// 지역 버튼 클릭 이벤트 (정상 동작)
- 		const regionButtons = document.querySelectorAll('.region-section .btn'); 
- 		regionButtons.forEach(button => { 
- 			button.addEventListener('click', function(event) { 
- 				event.preventDefault(); 
- 				regionButtons.forEach(btn => btn.classList.remove('active')); 
- 				this.classList.add('active'); 
- 			}); 
- 		}); 
- 	 
- 		// 영화관 버튼 클릭 이벤트 (정상 동작)
- 		const cinemaButtons = document.querySelectorAll('.cinema-section .btn'); 
- 		cinemaButtons.forEach(button => { 
- 			button.addEventListener('click', function(event) { 
- 				event.preventDefault(); 
- 				cinemaButtons.forEach(btn => btn.classList.remove('active')); 
- 				this.classList.add('active'); 
- 			}); 
- 		}); 
- 	 
- 		// 시간 선택 이벤트
- 		const timeButtons = document.querySelectorAll('.time'); 
- 		timeButtons.forEach(button => { 
- 			button.addEventListener('click', function(event) { 
- 				event.preventDefault(); 
- 				timeButtons.forEach(btn => btn.classList.remove('active')); 
- 				this.classList.add('active'); 
- 			}); 
- 		}); 
- 	 
- 		// 영화 선택 이벤트 
- 		const movieElements = document.querySelectorAll('.movie'); 
- 		movieElements.forEach(movie => { 
- 			movie.addEventListener('click', function(event) { 
- 				event.preventDefault(); 
- 				movieElements.forEach(el => el.classList.remove('selected')); 
- 				this.classList.add('selected'); 
- 			}); 
- 		}); 
- 	}); 
- </script>
+			// 3. 영화관 버튼 클릭 이벤트 (동적 생성되는 버튼이므로 on 사용)
+			$('#cinemaList').on('click', '.cinema-btn', function() {
+				console.log('영화관 선택:', $(this).text());
+			});
+
+			// 4. 영화 선택 이벤트
+			$('.movie').click(function() {
+				$(this).addClass('selected');
+			});
+
+			// 5. 날짜 선택 이벤트
+			$('.date-btn').click(function() {
+				const date = $(this).data('date');
+				const day = $(this).find('small').text();
+				$('#selected-date').text(`${date} (${day}) 선택됨`);
+			});
+
+			// 6. 시간 선택 이벤트
+			$('#time-list').on('click', '.time', function() {
+				console.log('선택된 시간:', $(this).text());
+			});
+		});
+
+		// 좌석 선택 페이지로 이동
+		function goToSeat() {
+			const selectedMovie = $('.movie.selected');
+			if (selectedMovie.length === 0) {
+				alert('영화를 먼저 선택해주세요.');
+				return;
+			}
+			
+			const selectedTime = $('.time.active');
+			if (selectedTime.length === 0) {
+				alert('상영 시간을 선택해주세요.');
+				return;
+			}
+
+			alert('좌석 선택 페이지로 이동합니다!');
+			// window.location.href = 'seat.jsp';
+		}
+	</script>
 
 </body>
 </html>
