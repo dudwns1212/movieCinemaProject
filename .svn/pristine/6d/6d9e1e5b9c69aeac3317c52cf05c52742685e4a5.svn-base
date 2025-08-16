@@ -12,8 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>예매</title>
 <!-- jQuery 라이브러리 추가 -->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <style>
 :root {
 	--bg: #000000;
@@ -122,9 +121,8 @@ h1 {
 }
 
 .btn.ghost {
-	background: white;
+	background: transparent;
 	border: 1px solid #ddd;
-	color: var(--txt);
 }
 
 .btn.ghost:hover {
@@ -308,41 +306,24 @@ hr.line {
 	transform: translateY(-1px);
 }
 
-/* ★★★ 수정된 지역/영화관 선택 스타일 ★★★ */
+/* ★★★ 핵심 수정: 지역/영화관 선택 스타일 블록 ★★★ */
 .region-section .btn {
 	text-align: left;
 	justify-content: flex-start;
-	background: white;
-	color: var(--txt);
-	border: 2px solid var(--line);
 }
 
-.region-section .btn:hover {
-	background: #f8f9fa;
-	border-color: var(--accent);
-}
-
-.region-section .btn.active {
+.region-section .btn:hover, .region-section .btn.active {
 	background: var(--accent);
 	color: white;
-	border-color: var(--accent);
 }
 
-.cinema-section .btn.ghost {
+.cinema-section .btn {
 	text-align: left;
 	justify-content: flex-start;
-	background: white;
-	color: var(--txt);
-	border: 2px solid var(--line);
-	font-weight: 500;
-}
-
-.cinema-section .btn.ghost:hover {
 	background: #f8f9fa;
-	border-color: var(--accent);
 }
 
-.cinema-section .btn.ghost.active {
+.cinema-section .btn:hover, .cinema-section .btn.active {
 	background: var(--accent);
 	color: white;
 	border-color: var(--accent);
@@ -363,9 +344,9 @@ hr.line {
 							<c:set var="locations" value="" />
 							<c:forEach var="cinema" items="${cinemaList}">
 								<c:if test="${not fn:contains(locations, cinema.location)}">
-									<button type="button" class="btn block location-btn"
-										data-location="${cinema.location}">
-										${cinema.location}</button>
+									<button type="button" class="btn block location-btn" data-location="${cinema.location}">
+										${cinema.location}
+									</button>
 									<c:set var="locations" value="${locations}${cinema.location}," />
 								</c:if>
 							</c:forEach>
@@ -394,7 +375,7 @@ hr.line {
 										onerror="this.src='${pageContext.request.contextPath}/asset/images/movie_default.png'">
 									<div class="content">
 										<div class="title">${movie.movieTitle}</div>
-										<div class="info">${movie.genre}•${movie.movieTime}분</div>
+										<div class="info">${movie.genre}• ${movie.movieTime}분</div>
 									</div>
 								</div>
 							</c:forEach>
@@ -449,17 +430,12 @@ hr.line {
 			</section>
 		</div>
 	</main>
-
+	
 	<script type="text/javascript">
 		$(document).ready(function() {
 			// 1. 지역 버튼 클릭 이벤트
-			$(document).on('click', '.location-btn', function() {
-    			console.log('지역 버튼 클릭됨');
-				
-				// 모든 지역 버튼에서 active 클래스 제거
-				$('.location-btn').removeClass('active');
-				// 클릭된 버튼에 active 클래스 추가
-				$(this).addClass('active');
+			$('.location-btn').click(function() {
+				console.log('지역 버튼 클릭됨');
 				
 				let location = $(this).data('location');
 				console.log('선택된 지역:', location);
@@ -479,51 +455,47 @@ hr.line {
 
 			// 2. 영화관 데이터 업데이트 함수
 			function changeCinema(data) {
-			    console.log('Ajax 성공! 받은 데이터:', data);
-			    console.log('데이터 타입:', typeof data);
-			    console.log('데이터 키 개수:', Object.keys(data).length);
-			    
-			    let cinemaListDiv = $('#cinemaList');
-			    cinemaListDiv.empty();
-			    
-			    if(Object.keys(data).length == 0) {
-			        cinemaListDiv.append('<div class="empty-state">해당 지역에 영화관이 없습니다</div>');
-			        return;
-			    }
-			    
-			    // ★ 템플릿 리터럴 대신 jQuery 방식으로 생성
-			    for(let key in data) {
-			        console.log('처리 중 - 키:', key, '값:', data[key]);
-			        
-			        // jQuery로 버튼 생성
-			        let newButton = $('<button></button>')
-			            .attr('type', 'button')
-			            .addClass('btn block ghost cinema-btn')
-			            .attr('data-cinema-id', key)
-			            .text(data[key]); // 텍스트 직접 설정
-			        
-			        cinemaListDiv.append(newButton);
-			        console.log('버튼 생성 완료:', data[key]);
-			    }
-			    
-			    console.log('생성된 버튼 개수:', $('#cinemaList .cinema-btn').length);
-			    
-			    // 생성 확인
-			    $('.cinema-btn').each(function() {
-			        console.log('실제 버튼 텍스트:', $(this).text());
-			    });
+				console.log('Ajax 성공! 받은 데이터:', data);
+				console.log('데이터 타입:', typeof data);
+				console.log('데이터 키 개수:', Object.keys(data).length);
+				
+				let cinemaListDiv = $('#cinemaList');
+				cinemaListDiv.empty();
+				
+				if(Object.keys(data).length === 0) {
+					cinemaListDiv.append('<div class="empty-state">해당 지역에 영화관이 없습니다</div>');
+					return;
+				}
+				
+				for(let key in data) {
+					let newCinemaButton = `<button type="button" class="btn block ghost cinema-btn" data-cinema-id="${key}">
+											${data[key]}
+										   </button>`;
+					cinemaListDiv.append(newCinemaButton);
+				}
 			}
 
 			// 3. 영화관 버튼 클릭 이벤트 (동적 생성되는 버튼이므로 on 사용)
 			$('#cinemaList').on('click', '.cinema-btn', function() {
 				console.log('영화관 선택:', $(this).text());
-				
-				// 모든 영화관 버튼에서 active 클래스 제거
-				$('.cinema-btn').removeClass('active');
-				// 클릭된 버튼에 active 클래스 추가
-				$(this).addClass('active');
 			});
 
+			// 4. 영화 선택 이벤트
+			$('.movie').click(function() {
+				$(this).addClass('selected');
+			});
+
+			// 5. 날짜 선택 이벤트
+			$('.date-btn').click(function() {
+				const date = $(this).data('date');
+				const day = $(this).find('small').text();
+				$('#selected-date').text(`${date} (${day}) 선택됨`);
+			});
+
+			// 6. 시간 선택 이벤트
+			$('#time-list').on('click', '.time', function() {
+				console.log('선택된 시간:', $(this).text());
+			});
 		});
 
 		// 좌석 선택 페이지로 이동

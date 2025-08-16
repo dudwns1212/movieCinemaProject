@@ -524,6 +524,28 @@ hr.line {
 				$(this).addClass('active');
 			});
 
+			// 4. 영화 선택 이벤트
+			$('.movie').click(function() {
+				$('.movie').removeClass('selected');
+				$(this).addClass('selected');
+			});
+
+			// 5. 날짜 선택 이벤트
+			$('.date-btn').click(function() {
+				$('.date-btn').removeClass('active');
+				$(this).addClass('active');
+				
+				const date = $(this).data('date');
+				const day = $(this).find('small').text();
+				$('#selected-date').text(`${date} (${day}) 선택됨`);
+			});
+
+			// 6. 시간 선택 이벤트
+			$('#time-list').on('click', '.time', function() {
+				$('.time').removeClass('active');
+				$(this).addClass('active');
+				console.log('선택된 시간:', $(this).text());
+			});
 		});
 
 		// 좌석 선택 페이지로 이동

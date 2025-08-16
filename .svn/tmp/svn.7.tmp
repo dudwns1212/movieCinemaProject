@@ -9,7 +9,6 @@ body {
 }
 .header-container {
     width: 100%;
-    background-color: rgb(0,0,0,0.5);
     background-color: rgba(0, 0, 0, 0.9);
     font-family: 'Noto Sans KR', sans-serif;
 }
@@ -163,7 +162,7 @@ body {
 
         <!-- 언더라인 아래 버튼 메뉴 -->
         <div class="ticketing_menu">
-            <form action="movieList.do" method="get" style="display: inline;">
+            <form action="movie.do" method="get" style="display: inline;">
                 <button type="submit">예매</button>
             </form>
             <form action="movieDetail.do" method="get" style="display: inline;">
