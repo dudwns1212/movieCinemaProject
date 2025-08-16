@@ -82,6 +82,16 @@ main {
 </head>
 <body>
 <jsp:include page="/header.jsp" />
+<% 
+String deleteMsg = (String) request.getAttribute("deleteMsg");
+if (deleteMsg != null) {
+%>
+<script>
+    alert('<%= deleteMsg %>');
+</script>
+<%
+}
+%>
 <main>
 	<div id="movieCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
 		<div class="carousel-indicators">

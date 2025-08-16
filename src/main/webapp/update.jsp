@@ -118,7 +118,7 @@ body {
 				<input type="number" name="userAge"
 					placeholder="나이 : <%=currentUser.getUserAge()%>" required>
 
-				<button type="submit">확인</button>
+				<button type="submit" method="post">확인</button>
 				<a href="myPage.jsp">마이페이지로 돌아가기</a> <a
 					href="delete.do?userId=<%=currentUser.getUserId()%>"
 					onclick="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')"> 

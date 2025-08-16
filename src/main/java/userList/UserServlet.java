@@ -1,4 +1,4 @@
-package Servlet;
+package userList;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -10,9 +10,6 @@ import javax.servlet.http.HttpSession;
 
 import cinemaList.CinemaListDAO;
 import movieList.MovieListDAO;
-import userList.UserListDAO;
-import userList.UserListVO;
-
 //유저 부분 서블릿 현: 로그인,회원가입,로그아웃1 / 추가: 수정
 @WebServlet("*.do")
 public class UserServlet extends HttpServlet {
@@ -26,15 +23,10 @@ public class UserServlet extends HttpServlet {
 		req.setCharacterEncoding("utf-8");
 		String uri = req.getRequestURI();
 		System.out.println("uri=" + uri);
-		HttpSession session = req.getSession();
 
 		String forwardPage = "/home.jsp";
 
 		if (uri.endsWith("home.do")) {
-			String deleteMsg = req.getParameter("deleteMsg");
-			if (deleteMsg != null) {
-
-			}
 			forwardPage = "/home.jsp";
 
 		} else if (uri.endsWith("login.do")) {
@@ -50,6 +42,7 @@ public class UserServlet extends HttpServlet {
 
 				if (user != null) {
 					// 로그인 성공: 사용자 정보가 null이 아니면 세션에 저장
+					HttpSession session = req.getSession();
 					session.setAttribute("loginUser", user);
 					forwardPage = "/home.jsp"; // 로그인 성공 후 홈으로 이동
 				} else {
@@ -71,8 +64,6 @@ public class UserServlet extends HttpServlet {
 			if (success) {
 				// 회원가입 성공 시 메시지 전달 후 로그인 페이지로 이동 유도
 				req.setAttribute("msg", "회원가입 성공! 로그인 해주세요.");
-				req.setAttribute("idStatusMsg", "아이디 중복여부를 확인하세요.");
-				req.setAttribute("idStatusColor", "#aaa");
 				forwardPage = "/register.jsp";
 			} else {
 				// 회원가입 실패 시 에러 메시지 전달 후 다시 회원가입 페이지로 이동
@@ -80,94 +71,21 @@ public class UserServlet extends HttpServlet {
 				forwardPage = "/register.jsp";
 			}
 		} else if (uri.endsWith("update.do")) {
-			// 기존 메서드 활용해서 객체 생성
-			UserListVO updateUser = makeUserFromReq(req);
-
-			UserListVO loginUser = (UserListVO) session.getAttribute("loginUser");
-
-			if (loginUser == null) {
-				req.setAttribute("loginMsg", "로그인이 필요합니다.");
-				forwardPage = "/login.jsp";
-				return;
-			}
-
-			// DAO를 통해 업데이트 실행
-			int result = udao.update(updateUser);
-
-			if (result > 0) {
-
-				// 성공 시 세션 정보도 업데이트
-				session.setAttribute("loginUser", updateUser);
-				req.setAttribute("msg", "회원정보가 성공적으로 수정되었습니다.");
-				forwardPage = "/update.jsp";
-			} else {
-				// 실패 시
-				req.setAttribute("errorMsg", "회원정보 수정에 실패했습니다.");
-				forwardPage = "/update.jsp";
-			}
+			
 		} else if (uri.endsWith("checkPw.do")) {
-			String un = req.getParameter("userNo");
 			String pw = req.getParameter("pw");
-			UserListVO user = udao.checkUser(un);
-			if (pw.equals(user.getUserPassword())) {
-				forwardPage = "/update.jsp";
-			} else {
-				String errorMsg = "비밀번호가 일치하지 않습니다";
-				req.setAttribute("errorMsg", errorMsg);
-				forwardPage = "/myPage.jsp";
-			}
-
+			forwardPage = "/update.jsp";
 		} else if (uri.endsWith("seat.do")) {
-			UserListVO loginUser = (UserListVO) session.getAttribute("loginUser");
-
-			if (loginUser == null) {
-				req.setAttribute("loginMsg", "로그인이 필요합니다.");
-				forwardPage = "/login.jsp";
-				return;
-			}
 			forwardPage = "/seat.jsp";
 		} else if (uri.endsWith("cinema.do")) {
 			forwardPage = "/cinema.jsp";
 		} else if (uri.endsWith("logout.do")) {
-			// 로그아웃 처리
-			session.invalidate(); // 세션 무효화
-			forwardPage = "/home.jsp";
+		    // 로그아웃 처리
+		    HttpSession session = req.getSession();
+		    session.invalidate(); // 세션 무효화
+		    forwardPage = "/home.jsp";
 		} else if (uri.endsWith("myPage.do")) {
-			UserListVO loginUser = (UserListVO) session.getAttribute("loginUser");
-			if (loginUser == null) {
-				req.setAttribute("loginMsg", "로그인이 필요합니다.");
-				forwardPage = "/login.jsp";
-			}
 			forwardPage = "/myPage.jsp";
-		} else if (uri.endsWith("event.do")) {
-			forwardPage = "/event.jsp";
-		} else if (uri.endsWith("reserve.do")) {
-			forwardPage = "/reserve.jsp";
-		} else if (uri.endsWith("delete.do")) {
-			String userId = req.getParameter("userId");
-
-			UserListVO loginUser = (UserListVO) session.getAttribute("loginUser");
-
-			if (loginUser == null) {
-				req.setAttribute("loginMsg", "로그인이 필요합니다.");
-				forwardPage = "/login.jsp";
-				return;
-			}
-
-			boolean success = udao.delete(userId);
-			if (success) {
-				// 성공 메시지와 함께 홈으로 리다이렉트
-				req.setAttribute("deleteMsg", "탈퇴되셨습니다.");
-				// 성공 시 세션 무효화
-				session.invalidate();
-				req.getRequestDispatcher("/home.jsp").forward(req, resp);
-				return;
-
-			} else {
-				req.setAttribute("errorMsg", "회원 탈퇴 처리 중 오류가 발생했습니다.");
-				forwardPage = "/update.jsp";
-			}
-
 		}
 
 		req.getRequestDispatcher(forwardPage).forward(req, resp);
@@ -176,33 +94,14 @@ public class UserServlet extends HttpServlet {
 	// 요청 파라미터를 UserListVO 객체로 만들어 반환하는 헬퍼 메서드
 	private UserListVO makeUserFromReq(HttpServletRequest req) {
 		UserListVO user = new UserListVO();
-
 		user.setUserId(req.getParameter("userId"));
 		user.setUserPassword(req.getParameter("userPassword"));
 		user.setUserName(req.getParameter("userName"));
-		String userNoStr = req.getParameter("userNo");
-
-		if (userNoStr != null && !userNoStr.isBlank()) {
-			try {
-				user.setUserNo(Integer.parseInt(userNoStr.trim()));
-			} catch (NumberFormatException e) {
-				user.setUserNo(0);
-			}
-		} else {
-			user.setUserNo(0);
-		}
-
-		String userAgeStr = req.getParameter("userAge");
-		if (userAgeStr != null && !userAgeStr.isBlank()) {
-			try {
-				user.setUserAge(Integer.parseInt(userAgeStr.trim()));
-			} catch (NumberFormatException e) {
-				user.setUserAge(0);
-			}
-		} else {
+		try {
+			user.setUserAge(Integer.parseInt(req.getParameter("userAge")));
+		} catch (NumberFormatException e) {
 			user.setUserAge(0);
 		}
-
 		user.setUserMobile(req.getParameter("userMobile"));
 		return user;
 	}

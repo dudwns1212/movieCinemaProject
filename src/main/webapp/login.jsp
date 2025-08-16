@@ -103,8 +103,17 @@
 </style>
 </head>
 <body>
-
-<jsp:include page="/header.jsp" /> 
+<jsp:include page="/header.jsp" />
+<% 
+String loginMsg = (String) request.getAttribute("loginMsg");
+if (loginMsg != null) {
+%>
+<script>
+    alert('<%= loginMsg %>');
+</script>
+<%
+}
+%> 
 <div class="login-container">
     <div class="login-box">
         <h1>로그인</h1>
