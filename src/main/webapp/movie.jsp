@@ -269,7 +269,6 @@ section {
 </style>
 
 </head>
-
 <body>
 
 	<!-- 공통 헤더 include -->
@@ -381,7 +380,7 @@ section {
 							<div class="card-foot">
 								
 								<a class="btn brand" href="movieList.do?movieId=${movie.movieId}">예매하기</a> 
-								<a class="btn detail" href="movieDetail.do?movieId=${movie.movieId}">상세정보</a>
+								<a class="btn detail" href="reserve.do?movieId=${movie.movieId}">상세정보</a>
 
 							</div>
 

@@ -16,7 +16,7 @@ body {
 	color: #fff;
 }
 
-/* -- 1. 배경 이미지를 적용할 전체 래퍼(wrapper) 스타일 (추가) -- */
+/* --- 1. 배경 이미지를 적용할 전체 래퍼(wrapper) 스타일 (추가) --- */
 .page-wrapper {
 	background-image: url('asset/images/mypageback.jpg'); /* 배경 이미지 경로 확인 필요 */
 	background-size: cover;

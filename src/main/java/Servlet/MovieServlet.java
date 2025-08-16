@@ -16,7 +16,7 @@ import movieList.MovieListDAO;
 import movieList.MovieListVO;
 
 // 모든 영화 관련 요청을 하나의 서블릿에서 처리
-@WebServlet(urlPatterns = { "/movieList.do", "/movieDetail.do", "/reserve.do" })
+@WebServlet(urlPatterns = { "/movieList.do", "/movieDetail.do", "/reserve.do",})
 public class MovieServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -78,17 +78,15 @@ public class MovieServlet extends HttpServlet {
 						req.setAttribute("selectedMovie", movie);
 					} else {
 						System.out.println("해당 ID의 영화를 찾을 수 없습니다: " + movieId);
+						forwardPage = "/home.jsp";
 					}
 
 				} catch (NumberFormatException e) {
 					System.out.println("잘못된 movieId 형식: " + movieIdStr);
+					forwardPage = "/home.jsp";
 				}
 			}
-
-			// 예매 페이지에는 전체 영화 목록도 필요
-			List<MovieListVO> movieList = mdao.getMovieList();
-			req.setAttribute("movieList", movieList);
-			forwardPage = "/reserve.jsp";
+			forwardPage = "/detail.jsp";
 		}
 
 		// JSP로 포워드
