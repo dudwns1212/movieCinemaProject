@@ -239,7 +239,6 @@ body {
     </div>
 
 </div>
-<jsp:include page="/bottom.jsp"/> 
-
+<jsp:include page="/bottom.jsp"/>
 </body>
 </html>

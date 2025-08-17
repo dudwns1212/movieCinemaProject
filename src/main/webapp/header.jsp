@@ -28,7 +28,7 @@ body {
 
 .header-inner h1 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
     letter-spacing: 0.1em;
 }
@@ -79,7 +79,7 @@ body {
 .ticketing_menu {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 18px;
     margin-top: 20px; /* 언더라인 아래 공간 */
 }
 

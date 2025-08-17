@@ -65,7 +65,7 @@ body {
 }
 
 .story-content {
-	max-height: 270px; /* 줄거리 스크롤 */
+	max-height: 220px; /* 줄거리 스크롤 */
 	overflow-y: auto;
 	padding: 15px;
 	background: rgba(255, 255, 255, 0.08); /* 줄거리도 유리판 느낌 */
@@ -122,9 +122,14 @@ body {
 				<div class="info">
 					<h2>${selectedMovie.movieTitle}</h2>
 					<p>
-						<strong>가격:</strong> ${selectedMovie.moviePrice} <strong>장르:</strong> ${selectedMovie.genre} <strong>⏱:</strong> ${selectedMovie.movieTime}
+						<strong>가격:</strong> '14000(프론트테스트용)'${selectedMovie.moviePrice}
 					</p>
-				
+					<p>
+						<strong>장르:</strong> '느와르(프론트테스트용)'${selectedMovie.genre}
+					</p>
+					<p>
+						<strong>⏱:</strong> '120분(프론트테스트용)'${selectedMovie.movieTime}
+					</p>
 
 					<!-- 줄거리 -->
 					<div class="story-container">
@@ -135,11 +140,10 @@ body {
 
 						</div>
 					</div>
-						
+						<a class="btn brand"
+									href="movieDetail.do">뒤로가기</a>
 					
 				</div>
-				<a class="btn brand"
-									href="movieDetail.do">뒤로가기</a>
 			</div>
 		</div>
 	</div>

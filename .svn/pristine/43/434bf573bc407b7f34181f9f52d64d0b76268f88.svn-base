@@ -389,7 +389,7 @@ hr.line {
 					<c:choose>
 						<c:when test="${not empty movieList}">
 							<c:forEach var="movie" items="${movieList}">
-								<div class="movie" id="movieList">
+								<div class="movie">
 									<img
 										src="${movie.poster != null ? movie.poster : 'asset/images/movie_default.png'}"
 										alt="${movie.movieTitle}"
@@ -512,61 +512,14 @@ hr.line {
 			}
 
 			// 3. 영화관 버튼 클릭 이벤트 (동적 생성되는 버튼이므로 on 사용)
-			$(document).on('click', '.cinema-btn', function() {
+			$('#cinemaList').on('click', '.cinema-btn', function() {
 				console.log('영화관 선택:', $(this).text());
 				
 				// 모든 영화관 버튼에서 active 클래스 제거
 				$('.cinema-btn').removeClass('active');
 				// 클릭된 버튼에 active 클래스 추가
 				$(this).addClass('active');
-				
-				let cinemaId = $(this).data('cinema_id');
-		        console.log('선택된 영화관:', cinemaId);
-		        
-		        $.ajax({
-					url: 'movieReserve.do',           
-					data: {'cinemaId': cinemaId},        
-					dataType: "json",                    
-					success: changeMovie,
-					error: function(xhr, status, error) {
-						console.error('Ajax 에러:', error);
-						console.error('응답:', xhr.responseText);
-					}
-				});		        	
-	      	});
-			
-			function changeMovie(data) {
-			    console.log('Ajax 성공! 받은 데이터:', data);
-			    console.log('데이터 타입:', typeof data);
-			    console.log('데이터 키 개수:', Object.keys(data).length);
-			    
-			    let movieListDiv = $('.movie');
-			    movieListDiv.empty();
-			    
-			    if(Object.keys(data).length == 0) {
-			        movieListDiv.append('<div class="empty-state">해당 지역에 영화관이 없습니다</div>');
-			        return;
-			    }
-			    
-			    // ★ 템플릿 리터럴 대신 jQuery 방식으로 생성
-			    for(let key in data) {
-			        console.log('처리 중 - 키:', key, '값:', data[key]);
-			        
-			        // jQuery로 버튼 생성
-			        let newButton = $('<button></button>')
-			            .attr('type', 'button')
-			            .addClass('btn block ghost cinema-btn')
-			            .attr('data-cinema-id', key)
-			            .text(data[key]); // 텍스트 직접 설정
-			        
-			        movieListDiv.append(newButton);
-			    }
-			    
-			    // 생성 확인
-			    $('.cinema-btn').each(function() {
-			        console.log('실제 버튼 텍스트:', $(this).text());
-			    });
-			}
+			});
 
 				// 4. 영화 선택 이벤트
 			$('.movie').click(function() {
