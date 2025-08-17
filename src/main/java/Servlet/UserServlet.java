@@ -126,8 +126,6 @@ public class UserServlet extends HttpServlet {
 				return;
 			}
 			forwardPage = "/seat.jsp";
-		} else if (uri.endsWith("cinema.do")) {
-			forwardPage = "/cinema.jsp";
 		} else if (uri.endsWith("logout.do")) {
 			// 로그아웃 처리
 			session.invalidate(); // 세션 무효화
@@ -141,8 +139,6 @@ public class UserServlet extends HttpServlet {
 			forwardPage = "/myPage.jsp";
 		} else if (uri.endsWith("event.do")) {
 			forwardPage = "/event.jsp";
-		} else if (uri.endsWith("reserve.do")) {
-			forwardPage = "/reserve.jsp";
 		} else if (uri.endsWith("delete.do")) {
 			String userId = req.getParameter("userId");
 

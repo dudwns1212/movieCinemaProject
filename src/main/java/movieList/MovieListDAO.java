@@ -174,6 +174,49 @@ public class MovieListDAO {
         return movieList;
     }
     
+    public List<MovieListVO> getMovieListByCinema(int cinemaId) {
+        List<MovieListVO> movieList = new ArrayList<>();
+        
+        String sql = 
+            "SELECT DISTINCT " +
+            "  m.movie_id AS movieId, " +
+            "  m.title AS movieTitle, " +
+            "  m.price AS moviePrice, " +
+            "  m.movieTime, " +
+            "  m.genre, " +
+            "  m.poster, " +
+            "  m.synopsis " +
+            "FROM movies m " +
+            "JOIN schedules s ON m.movie_id = s.movie_id " +
+            "WHERE s.cinema_id = ? " +
+            "ORDER BY m.movie_id ASC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, cinemaId);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    MovieListVO movie = new MovieListVO();
+                    
+                    movie.setMovieId(rs.getInt("movieId"));
+                    movie.setMovieTitle(rs.getString("movieTitle"));
+                    movie.setMoviePrice(rs.getInt("moviePrice"));
+                    movie.setMovieTime(rs.getInt("movieTime"));
+                    movie.setGenre(rs.getString("genre"));
+                    movie.setPoster(rs.getString("poster"));
+                    movie.setSynopsis(rs.getString("synopsis"));
+                    
+                    movieList.add(movie);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return movieList;
+    }
+    
     private static Connection getConnection() throws Exception {
         Context initContext = new InitialContext();
         Context envContext = (Context) initContext.lookup("java:comp/env");

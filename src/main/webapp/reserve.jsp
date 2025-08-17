@@ -174,11 +174,6 @@ h1 {
 	cursor: pointer;
 }
 
-.movie.selected {
-	border-color: var(--accent);
-	box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
-}
-
 .movie:hover {
 	border-color: var(--accent);
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -385,52 +380,17 @@ hr.line {
 
 			<section class="panel">
 				<h3>영화 선택</h3>
-				<div class="body">
-					<c:choose>
-						<c:when test="${not empty movieList}">
-							<c:forEach var="movie" items="${movieList}">
-								<div class="movie" id="movieList">
-									<img
-										src="${movie.poster != null ? movie.poster : 'asset/images/movie_default.png'}"
-										alt="${movie.movieTitle}"
-										onerror="this.src='${pageContext.request.contextPath}/asset/images/movie_default.png'">
-									<div class="content">
-										<div class="title">${movie.movieTitle}</div>
-										<div class="info">${movie.genre}•${movie.movieTime}분</div>
-									</div>
-								</div>
-							</c:forEach>
-						</c:when>
-						<c:otherwise>
-							<div class="empty-state">
-								<p>현재 상영 중인 영화가 없습니다.</p>
-							</div>
-						</c:otherwise>
-					</c:choose>
+				<div class="body" id="movieList">
+					<div class="empty-state">영화관을 먼저 선택해주세요</div>
 				</div>
 			</section>
 
 			<section class="panel">
-				<h3>오늘 : 8월 19일</h3>
+				<h3>영화 시간표</h3>
 				<div class="body">
 					<div class="tag">날짜</div>
-					<div class="date-list">
-						<button type="button" class="date-btn active"
-							data-date="2025-08-19">
-							19<br> <small>오늘</small>
-						</button>
-						<button type="button" class="date-btn" data-date="2025-08-20">
-							20<br> <small>수</small>
-						</button>
-						<button type="button" class="date-btn" data-date="2025-08-21">
-							21<br> <small>목</small>
-						</button>
-						<button type="button" class="date-btn" data-date="2025-08-22">
-							22<br> <small>금</small>
-						</button>
-						<button type="button" class="date-btn" data-date="2025-08-23">
-							23<br> <small>토</small>
-						</button>
+					<div class="date-list" id="date-list">
+						<div class="empty-state">영화를 먼저 선택해주세요</div>
 					</div>
 
 					<div class="selected-date" id="selected-date">
@@ -456,9 +416,8 @@ hr.line {
 			$(document).on('click', '.location-btn', function() {
     			console.log('지역 버튼 클릭됨');
 				
-				// 모든 지역 버튼에서 active 클래스 제거
 				$('.location-btn').removeClass('active');
-				// 클릭된 버튼에 active 클래스 추가
+				//선택효과 추가 css
 				$(this).addClass('active');
 				
 				let location = $(this).data('location');
@@ -470,10 +429,6 @@ hr.line {
 					data: {'location': location},        
 					dataType: "json",                    
 					success: changeCinema,
-					error: function(xhr, status, error) {
-						console.error('Ajax 에러:', error);
-						console.error('응답:', xhr.responseText);
-					}
 				});
 			});
 
@@ -493,92 +448,87 @@ hr.line {
 			    
 			    // ★ 템플릿 리터럴 대신 jQuery 방식으로 생성
 			    for(let key in data) {
-			        console.log('처리 중 - 키:', key, '값:', data[key]);
+			    	
+			        let cinemaId = key;
+			        let cinemaName = data[key];
+			        let newCinemaBtn = '<button type="button" class="btn block ghost cinema-btn" data-cinema-id="' + cinemaId + '">' + cinemaName + '</button>';
+			        cinemaListDiv.append(newCinemaBtn);
 			        
-			        // jQuery로 버튼 생성
-			        let newButton = $('<button></button>')
-			            .attr('type', 'button')
-			            .addClass('btn block ghost cinema-btn')
-			            .attr('data-cinema-id', key)
-			            .text(data[key]); // 텍스트 직접 설정
-			        
-			        cinemaListDiv.append(newButton);
 			    }
-			    
-			    // 생성 확인
-			    $('.cinema-btn').each(function() {
-			        console.log('실제 버튼 텍스트:', $(this).text());
-			    });
 			}
 
-			// 3. 영화관 버튼 클릭 이벤트 (동적 생성되는 버튼이므로 on 사용)
-			$(document).on('click', '.cinema-btn', function() {
-				console.log('영화관 선택:', $(this).text());
-				
-				// 모든 영화관 버튼에서 active 클래스 제거
-				$('.cinema-btn').removeClass('active');
-				// 클릭된 버튼에 active 클래스 추가
-				$(this).addClass('active');
-				
-				let cinemaId = $(this).data('cinema_id');
-		        console.log('선택된 영화관:', cinemaId);
-		        
-		        $.ajax({
-					url: 'movieReserve.do',           
-					data: {'cinemaId': cinemaId},        
-					dataType: "json",                    
-					success: changeMovie,
-					error: function(xhr, status, error) {
-						console.error('Ajax 에러:', error);
-						console.error('응답:', xhr.responseText);
-					}
-				});		        	
-	      	});
-			
-			function changeMovie(data) {
-			    console.log('Ajax 성공! 받은 데이터:', data);
-			    console.log('데이터 타입:', typeof data);
-			    console.log('데이터 키 개수:', Object.keys(data).length);
+			// 3. 영화관 선택 이벤트 (동적 생성 버튼)
+			$(document).on('click', '.cinema-btn', function(){
+			    $('.cinema-btn').removeClass('active');
+			    $(this).addClass('active');
 			    
-			    let movieListDiv = $('.movie');
+			    let cinemaId = $(this).data('cinema-id');
+			    
+			    $.ajax({
+			        url: 'movieReserve.do',
+			        data: {'cinemaId': cinemaId},
+			        dataType: "json",
+			        success: changeMovie
+			    });
+			});
+
+			// 4. 영화 목록 업데이트
+			function changeMovie(data) {
+			    
+			    let movieListDiv = $('#movieList');
 			    movieListDiv.empty();
 			    
-			    if(Object.keys(data).length == 0) {
-			        movieListDiv.append('<div class="empty-state">해당 지역에 영화관이 없습니다</div>');
+			    if(data.length == 0) {
+			    	movieListDiv.append('<div class="empty-state">상영할 수 있는 영화가 없습니다.</div>');
 			        return;
 			    }
 			    
-			    // ★ 템플릿 리터럴 대신 jQuery 방식으로 생성
-			    for(let key in data) {
-			        console.log('처리 중 - 키:', key, '값:', data[key]);
+			    for(let i = 0; i < data.length; i++) {
+			        let movie = data[i];//배열에서 각 객체를 꺼내서 movie는 이름으로 사용
 			        
-			        // jQuery로 버튼 생성
-			        let newButton = $('<button></button>')
-			            .attr('type', 'button')
-			            .addClass('btn block ghost cinema-btn')
-			            .attr('data-cinema-id', key)
-			            .text(data[key]); // 텍스트 직접 설정
-			        
-			        movieListDiv.append(newButton);
-			    }
-			    
-			    // 생성 확인
-			    $('.cinema-btn').each(function() {
-			        console.log('실제 버튼 텍스트:', $(this).text());
-			    });
+			        let newMovie = '<div class="movie" data-movie="'+ movie.movieId + '">' +
+			                      '<img src="' + (movie.poster || 'asset/images/movie_default.png') + '">' +
+			                      '<div class="content">' +
+			                      '<div class="title">' + movie.movieTitle + '</div>' +
+			                      '<div class="info">' + movie.genre + '•' + movie.movieTime + '분</div>' +
+			                      '</div>' +
+			                      '</div>';
+					movieListDiv.append(newMovie);
+			    }			    
 			}
-
-				// 4. 영화 선택 이벤트
-			$('.movie').click(function() {
-				$('.movie').removeClass('selected');
-				$(this).addClass('selected');
-			});
-
-			// 5. 날짜 선택 이벤트
-			$('.date-btn').click(function() {
-		        $('.date-btn').removeClass('active');
+			
+		    $(document).on('click', '.movie' ,function() {
+		        $('.movie').removeClass('active');
 		        $(this).addClass('active');
+		        
+		        let cinemaId = $('.cinema-btn.active').data('cinema-id');
+		        let movieId =  $(this).data('movie');
+		        
+		        $.ajax({
+		        	url: 'ScheduleServlet',
+			        data: {'cinemaId': cinemaId, 'movieId' : movieId},
+			        dataType: "json",
+			        success: changeSchedule
+		        });
 		    });
+		    
+		    function changeSchedule(data) {
+		    	
+		    	let dateListDiv = $('#date-list');
+		    	dateListDiv.empty();
+		    	
+		    	if(data.length == 0) {
+		    		dateListDiv.append('<div class="empty-state">상영할 수 있는 시간이 없습니다.</div>');
+			        return;
+		    	}
+		    	
+		    	for(let i = 0; i < data.dates.length; i++){
+		    		let date = data.dates[i];
+		    		let newDateBtn = '<button type="button" class="date-btn" data-date="' + date + '">' + date + '</button>';
+		    		dateListDiv.append(newDateBtn);
+		    	}
+		    	
+		    }
 
 			// 6. 시간 선택 이벤트
 			$('#time-list').on('click', '.time', function() {

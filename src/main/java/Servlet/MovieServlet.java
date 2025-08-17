@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -16,7 +17,7 @@ import movieList.MovieListDAO;
 import movieList.MovieListVO;
 
 // 모든 영화 관련 요청을 하나의 서블릿에서 처리
-@WebServlet(urlPatterns = { "/movieList.do", "/movieDetail.do", "/reserve.do", "/movieGenre.do"})
+@WebServlet(urlPatterns = { "/movieList.do", "/movieDetail.do", "/reserve.do", "/movieGenre.do", "/movieReserve.do"})
 public class MovieServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -25,7 +26,7 @@ public class MovieServlet extends HttpServlet {
 		resp.setContentType("text/html; charset=utf-8");
 		
 		String uri = req.getRequestURI();
-		String forwardPage = "/home.jsp"; // 기본 페이지
+		String forwardPage = "/movie.jsp"; // 기본 페이지
 		
 		System.out.println("요청된 URI: " + uri);
 		
@@ -93,6 +94,50 @@ public class MovieServlet extends HttpServlet {
 			req.setAttribute("movieList", movieList);
 			
 			forwardPage = "/movie.jsp";
+		} else if (uri.endsWith("/movieReserve.do")) {
+		    resp.setContentType("application/json; charset=utf-8");
+		    PrintWriter out = resp.getWriter();
+		    String cinemaIdStr = req.getParameter("cinemaId");
+		    String result = "";
+		    
+		    try {
+		        if(cinemaIdStr == null || cinemaIdStr.equals("")) {
+		            result = "[]";
+		        } else {
+		            int cinemaId = Integer.parseInt(cinemaIdStr);
+		            List<MovieListVO> movies = mdao.getMovieListByCinema(cinemaId);
+		            
+		            if (movies == null || movies.isEmpty()) {
+		                result = "[]";
+		            } else {
+		                // JSON 배열 형태로 상세 정보 포함
+		                result = "[";
+		                for (int i = 0; i < movies.size(); i++) {
+		                    MovieListVO movie = movies.get(i);
+		                    result += "{";
+		                    result += "\"movieId\":" + movie.getMovieId() + ",";
+		                    result += "\"movieTitle\":\"" + movie.getMovieTitle().replace("\"", "\\\"") + "\",";
+		                    result += "\"poster\":\"" + (movie.getPoster() != null ? movie.getPoster() : "asset/images/movie_default.png") + "\",";
+		                    result += "\"genre\":\"" + movie.getGenre() + "\",";
+		                    result += "\"movieTime\":" + movie.getMovieTime();
+		                    result += "}";
+		                    
+		                    if (i < movies.size() - 1) {
+		                        result += ",";
+		                    }
+		                }
+		                result += "]";
+		            }
+		        }
+		    } catch (NumberFormatException e) {
+		        System.out.println("잘못된 cinemaId 형식: " + cinemaIdStr);
+		        result = "[]";
+		    }
+		    
+		    System.out.println("서블릿 응답: " + result);
+		    out.println(result);
+		    out.close();
+		    return;
 		}
 
 		// JSP로 포워드

@@ -31,8 +31,8 @@ public class CinemaServlet extends HttpServlet {
             result = "{}";
         } else {
             // DAO 사용해서 데이터베이스에서 영화관 조회
-            CinemaListDAO dao = new CinemaListDAO();
-            List<CinemaListVO> cinemas = dao.getCinemasByLocation(location);
+            CinemaListDAO cdao = new CinemaListDAO();
+            List<CinemaListVO> cinemas = cdao.getCinemasByLocation(location);
             
             if (cinemas == null || cinemas.isEmpty()) {
                 result = "{}";
