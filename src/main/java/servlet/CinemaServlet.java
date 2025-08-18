@@ -45,7 +45,7 @@ public class CinemaServlet extends HttpServlet {
                     
                     // 마지막 항목이 아니면 쉼표 추가
                     if (i < cinemas.size() - 1) {
-                        result += ",";
+                        result += ",,";
                     }
                 }
                 result += "}";
