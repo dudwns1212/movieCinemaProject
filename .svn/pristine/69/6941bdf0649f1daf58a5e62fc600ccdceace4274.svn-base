@@ -1,0 +1,59 @@
+package servlet;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import cinemaList.CinemaListDAO;
+import java.util.List;
+import cinemaList.CinemaListVO;
+
+@WebServlet("/CinemaServlet")
+public class CinemaServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    	req.setCharacterEncoding("utf-8");
+		resp.setContentType("text/html; charset=utf-8");
+        PrintWriter out = resp.getWriter();
+
+        // 파라미터 받기
+        String location = req.getParameter("location");
+        String result = "";
+
+        if (location == null || location.equals("")) {
+            // 지역이 선택 안됐을 때
+            result = "{}";
+        } else {
+            // DAO 사용해서 데이터베이스에서 영화관 조회
+            CinemaListDAO cdao = new CinemaListDAO();
+            List<CinemaListVO> cinemas = cdao.getCinemasByLocation(location);
+            
+            if (cinemas == null || cinemas.isEmpty()) {
+                result = "{}";
+            } else {
+                result = "{";
+                
+                for (int i = 0; i < cinemas.size(); i++) {
+                    CinemaListVO cinema = cinemas.get(i);
+                    result += "\"" + cinema.getCinemaId() + "\":\"" + cinema.getName() + "\"";
+                    
+                    // 마지막 항목이 아니면 쉼표 추가
+                    if (i < cinemas.size() - 1) {
+                        result += ",";
+                    }
+                }
+                result += "}";
+            }
+        }
+
+        System.out.println("서블릿 응답: " + result);
+        out.println(result);
+        out.close();
+    }
+}
