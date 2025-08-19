@@ -118,20 +118,24 @@ public class UserListDAO {
 
 	public boolean delete(String userId) {
 	    // userId 파라미터를 받아서 id 컬럼과 비교
-	    String sql = "DELETE FROM users WHERE id = ?";
-	    int result = 0;
 	    
-	    try (Connection conn = getConnection(); 
-	         PreparedStatement psmt = conn.prepareStatement(sql)) {
-	        
+	    int result = 0;
+	    	    
+	    
+	    try (Connection conn = getConnection();) {
+	    	
+	    	String deleteReservations = "DELETE FROM reservations WHERE user_id = (SELECT user_id FROM users WHERE id = ?)";
+	        try (PreparedStatement ps1 = conn.prepareStatement(deleteReservations)) {
+	            ps1.setString(1, userId);
+	            ps1.executeUpdate();
+	        }
+	    	
 	        // 디버깅용 로그
-	        System.out.println("삭제 시도 - userId: " + userId);
-	        System.out.println("실행 SQL: " + sql);
+	        String sql = "DELETE FROM users WHERE id = ?";
+	        PreparedStatement psmt = conn.prepareStatement(sql);
 	        
 	        psmt.setString(1, userId);
 	        result = psmt.executeUpdate();
-	        
-	        System.out.println("삭제 결과: " + result + "개 행 삭제됨");
 	        
 	        return result > 0;
 	        
