@@ -8,6 +8,7 @@ public class MovieListVO {
 	public String genre;       // genre
 	public String poster;
 	public String synopsis;
+	private Integer likeCount;
 
 	public String getSynopsis() {
 		return synopsis;
@@ -67,5 +68,12 @@ public class MovieListVO {
 	
 	public void setGenre(String genre) {
 		this.genre = genre;
+	}
+	
+	public Integer getLikeCount() { 
+		return likeCount; 
+	}
+	public void setLikeCount(Integer likeCount) {
+		this.likeCount = likeCount;
 	}
 }
