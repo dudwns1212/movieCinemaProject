@@ -122,7 +122,7 @@ body {
 				<div class="info">
 					<h2>${selectedMovie.movieTitle}</h2>
 					<p>
-						<strong>가격:</strong> ${selectedMovie.moviePrice} <strong>장르:</strong> ${selectedMovie.genre} <strong>⏱:</strong> ${selectedMovie.movieTime}
+						<strong>가격:</strong> ${selectedMovie.moviePrice}원 <strong>장르:</strong> ${selectedMovie.genre} <strong>상영시간:</strong> ${selectedMovie.movieTime}분
 					</p>
 				
 
@@ -139,7 +139,7 @@ body {
 					
 				</div>
 				<a class="btn brand"
-									href="movieDetail.do">뒤로가기</a>
+									href="MovieGalleryServlet">뒤로가기</a>
 			</div>
 		</div>
 	</div>

@@ -230,7 +230,7 @@ body {
                 <div class="check-card">
                     <h3>예매 확인</h3>
                     <p>여기서 예매한 내역를 확인하세요</p>
-                    <form action="movie.do">
+                    <form action="history.do">
                         <button type="submit" class="card-button">예매 내역</button>
                     </form>
                 </div>

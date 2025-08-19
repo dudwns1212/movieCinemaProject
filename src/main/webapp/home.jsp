@@ -111,6 +111,7 @@ if (deleteMsg != null) {
 			<button type="button" data-bs-target="#movieCarousel" data-bs-slide-to="0" class="active"></button>
 			<button type="button" data-bs-target="#movieCarousel" data-bs-slide-to="1"></button>
 			<button type="button" data-bs-target="#movieCarousel" data-bs-slide-to="2"></button>
+			<button type="button" data-bs-target="#movieCarousel" data-bs-slide-to="3"></button>
 		</div>
 
 		<!-- 슬라이드 -->
@@ -145,6 +146,17 @@ if (deleteMsg != null) {
 					<p>한 남자, 피니어스 배너햄은 세상의 편견과 맞서</p>
 					<p>위대한 공연을 만들어 나간다.</p>
 					<p>열정과 도전, 그리고 희망이 사람들을 사로잡는다.</p>
+				</div>
+			</div>
+			
+			<div class="carousel-item">
+				<img src="asset/images/infinity.png" alt="위대한 쇼맨"
+				     data-video="https://www.youtube.com/embed/zN8K_uE1LYg?autoplay=1">
+				<div class="carousel-caption">
+					<h3>귀멸의 칼날 무한성편</h3>
+					<p>결전의 포문이 열린다⸺</p>
+					<p>탄지로 일행이 떨어진 곳, 그곳은 혈귀의 본거지 《무한성》─</p>
+					<p>“귀살대”와 “혈귀”의 최종 결전의 포문이 열린다.</p>
 				</div>
 			</div>
 		</div>

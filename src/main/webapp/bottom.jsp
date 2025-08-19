@@ -7,17 +7,19 @@
     background-color: #000; 
     color: #999; 
     font-family: 'Noto Sans KR', sans-serif;
-    padding: 40px 0; /* 위아래로 충분한 여백 */
-    font-size: 0.8rem; /* 푸터에 적합한 작은 폰트 사이즈 */
-    border-top: 1px solid #333; /* 헤더의 언더라인과 유사한 느낌의 상단 구분선 */
+    padding: 40px 0; 
+    font-size: 0.8rem; 
+    border-top: 1px solid #333; 
+    position: relative; /* sns-icons 위치 조정을 위해 */
 }
 
 /* 헤더와 마찬가지로 실제 내용이 들어가는 1200px 영역 */
 .footer-inner {
     max-width: 1200px;
     margin: 0 auto;
-    text-align: center; /* 모든 내용을 중앙 정렬하여 깔끔하게 표시 */
-    line-height: 1.8; /* 줄 간격을 넉넉하게 하여 가독성 확보 */
+    text-align: center; 
+    line-height: 1.8; 
+    position: relative; /* sns-icons 위치 조정을 위해 */
 }
 
 /* 회사 정보 (주소, 대표, 사업자번호 등) */
@@ -34,11 +36,11 @@
 /* 저작권 정보 */
 .footer-copyright {
     margin-top: 20px;
-    font-size: 0.75rem; /* 저작권 표시는 더 작게 */
+    font-size: 0.75rem; 
     color: #777;
 }
 
-/* 푸터의 링크 (필요시 사용) */
+/* 푸터의 링크 */
 .footer-links a {
     color: #999;
     text-decoration: none;
@@ -47,12 +49,33 @@
 }
 
 .footer-links a:hover {
-    color: #eee; /* 마우스를 올리면 밝게 표시 */
+    color: #eee; 
 }
 
+
+/* SNS 버튼 */
+.sns-icons {
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+    gap: 20px;
+    margin-top: 20px; /* 저작권 위쪽 여백 */
+    position: static; /* absolute 제거 */
+}
+
+
+.sns-icon {
+    width: 36px;
+    height: 36px;
+    filter: none; /* 검정색 아이콘 그대로 */
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.sns-icon:hover {
+    transform: scale(1.1);
+}
 </style>
-<br>
-<br>
+
 <div class="footer-container">
     <div class="footer-inner">
 
@@ -83,6 +106,19 @@
 
         <div class="footer-copyright">
             <p>&copy; LX-CINEMA Corp. All Rights Reserved.</p>
+        </div>
+
+        <!-- SNS 버튼 -->
+        <div class="sns-icons">
+            <a href="https://www.instagram.com" target="_blank">
+                <img src="asset/images/insta.png" alt="인스타그램" class="sns-icon">
+            </a>
+            <a href="https://www.facebook.com" target="_blank">
+                <img src="asset/images/facebook.png" alt="페이스북" class="sns-icon">
+            </a>
+            <a href="https://www.youtube.com" target="_blank">
+                <img src="asset/images/youtube.png" alt="유튜브" class="sns-icon">
+            </a>
         </div>
         
     </div>

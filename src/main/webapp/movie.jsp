@@ -21,6 +21,12 @@
 	rel="stylesheet">
 
 <style>
+:root{
+  --page-max: 1200px;     /* 헤더의 기준 폭과 동일 */
+  --page-pad-x: 20px;     /* 좌우 패딩 */
+  --grid-gap: 45px;       /* 카드 간격 */
+  --card-min: 200px;      /* 카드 최소폭 */
+}
 
 /* --------------------------
 
@@ -36,8 +42,10 @@ body {
 
 .container {
     min-height: 100vh; /* 최소 화면 높이 */
-    padding: 40px 20px 80px; /* 아래 여유 공간 확보 */
-
+    padding: 40px var(--page-pad-x) 80px; /* 아래 여유 공간 확보 */
+	max-width: var(--page-max);
+	margin: 0 auto;
+	box-sizing: border-box;
 }
 
 section {
@@ -47,7 +55,7 @@ section {
 .sec-head {
 	display: flex;
 	align-items: baseline;
-	justify-content: space-between;
+	justify-content: flex-start;
 	margin-bottom: 14px;
 }
 
@@ -64,26 +72,9 @@ section {
 --------------------------- */
 .grid {
 	display: grid;
-	grid-template-columns: repeat(5, 1fr);
-	gap: 18px;
-}
-
-@media ( max-width : 1100px) {
-	.grid {
-		grid-template-columns: repeat(4, 1fr);
-	}
-}
-
-@media ( max-width : 900px) {
-	.grid {
-		grid-template-columns: repeat(3, 1fr);
-	}
-}
-
-@media ( max-width : 640px) {
-	.grid {
-		grid-template-columns: repeat(2, 1fr);
-	}
+	grid-template-columns: repeat(auto-fit, minmax(var(--card-min), 1fr));;
+	gap: var(--grid-gap);
+	justify-content: stretch;
 }
 
 /* --------------------------
@@ -92,14 +83,15 @@ section {
 
 --------------------------- */
 .card {
+	width: 100%;
+	aspect-ratio: 2 / 3;   /* 높이 비율 고정 */
+	height: auto;
 	background: #151822;
 	border-radius: 12px;
 	overflow: hidden;
 	position: relative;
 	cursor: pointer;
 	font-weight: 700;
-	width: 200px;
-	height: 300px;
 	transition: 0.3s;
 }
 
@@ -144,6 +136,7 @@ section {
 	padding: 6px 10px;
 	font-weight: 900;
 	font-size: 14px;
+	z-index: 3;
 }
 
 /* 좋아요 버튼 */
@@ -159,6 +152,25 @@ section {
 	place-items: center;
 	cursor: pointer;
 	color: #fff;
+	z-index: 3;
+}
+
+/* 좋아요 숫자 */
+.like-count{
+	position: absolute;
+	z-index: 3;
+	right: 52px;
+	top: 10px;
+	height: 28px;
+	padding: 0 10px;
+	display: inline-flex;
+	align-items: center;
+	border-radius: 8px;
+	background: rgba(0,0,0,.45);
+	color: #fff;
+	font-weight: 700;
+	font-size: 13px;
+	line-height: 28px;
 }
 
 /* 카드 후버 버튼 */
@@ -173,6 +185,7 @@ section {
 	gap: 8px;
 	opacity: 0;
 	transition: opacity 0.3s ease;
+	z-index: 2;
 }
 
 .card:hover .card-foot {
@@ -262,10 +275,52 @@ section {
    캐러셀 스타일
 
 --------------------------- */
+.carousel.slide {
+  width: 100%;
+}
+
 .carousel-item img {
 	max-height: 400px;
 	object-fit: cover;
 }
+
+/* ===== 장르 칩 ===== */
+.genre-filter {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  overflow-x: auto;               /* 모바일 가로 스크롤 */
+  padding-bottom: 2px;            /* 스크롤바와 살짝 띄움 */
+  scrollbar-width: none;          /* 파폭 스크롤바 숨김 */
+}
+.genre-filter::-webkit-scrollbar { display: none; }  /* 크롬 스크롤바 숨김 */
+
+.genre-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid #2a2a2a;
+  border-radius: 999px;           /* 캡슐 */
+  color: #eee;
+  text-decoration: none;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: border-color .15s ease, background-color .15s ease, transform .1s ease;
+}
+.genre-chip:hover { border-color: #3a3a3a; background: #101010; transform: translateY(-1px); }
+.genre-chip:focus-visible { outline: 2px solid #ff2f6e; outline-offset: 2px; }
+
+/* 활성 칩 */
+.genre-chip.active {
+  border-color: #ff2f6e;
+  background: rgba(255,47,110, .08);
+}
+
+/* 섹션 제목과 같은 줄 배치 */
+.sec-head { align-items: center; gap: 14px; flex-wrap: wrap; }
+.sec-title { margin-right: 6px; }
+
 </style>
 
 </head>
@@ -339,35 +394,41 @@ section {
 
 		<!-- --------------------------
 
-     인기 상영작 TOP 10
+     인기 상영작 TOP
 
 --------------------------- -->
 
 		<section>
 
+			<%-- 현재 선택된 장르를 읽어서 active 클래스 부여 --%>
+			<%
+			  String selected = request.getParameter("genre");  // null이면 전체(기본)
+			%>
+			
 			<div class="sec-head">
-
-				<div class="sec-title">
-					인기 상영작 <span style="color: #ff2f6e">TOP 10</span>
-					<a href="movieGenre.do?genre=로맨스">로맨스</a>
-					<a href="movieGenre.do?genre=느와르">느와르</a>
-					<a href="movieGenre.do?genre=뮤지컬">뮤지컬</a>
-					<a href="movieGenre.do?genre=좀비">좀비</a>
-					<a href="movieGenre.do?genre=가족">가족</a>
-					<a href="movieGenre.do?genre=액션">액션</a>
-					<a href="movieGenre.do?genre=애니메이션">애니메이션</a>
-				</div>
-
+			  <div class="sec-title">
+			    인기 상영작 <span style="color:#ff2f6e">TOP</span>
+			  </div>
+		
+			  <nav class="genre-filter" aria-label="장르 필터">
+			    <%-- 필요시 '전체' 탭도 추가 --%>
+			    <a class="genre-chip <%= (selected==null ? "active" : "") %>" href="MovieGalleryServlet">전체</a>
+			    <a class="genre-chip <%= "로맨스".equals(selected) ? "active" : "" %>" href="MovieGenreServlet?genre=로맨스">로맨스</a>
+			    <a class="genre-chip <%= "느와르".equals(selected) ? "active" : "" %>" href="MovieGenreServlet?genre=느와르">느와르</a>
+			    <a class="genre-chip <%= "뮤지컬".equals(selected) ? "active" : "" %>" href="MovieGenreServlet?genre=뮤지컬">뮤지컬</a>
+			    <a class="genre-chip <%= "좀비".equals(selected) ? "active" : "" %>" href="MovieGenreServlet?genre=좀비">좀비</a>
+			    <a class="genre-chip <%= "가족".equals(selected) ? "active" : "" %>" href="MovieGenreServlet?genre=가족">가족</a>
+			    <a class="genre-chip <%= "액션".equals(selected) ? "active" : "" %>" href="MovieGenreServlet?genre=액션">액션</a>
+			    <a class="genre-chip <%= "애니메이션".equals(selected) ? "active" : "" %>" href="MovieGenreServlet?genre=애니메이션">애니메이션</a>
+			  </nav>
 			</div>
-
-
 
 			<!-- 영화 카드 그리드 -->
 
 			<div class="grid" id="movieGrid">
 				
 				<!-- JSTL forEach를 사용하여 영화 목록을 반복 출력 -->
-				<c:forEach var="movie" items="${movieList}" varStatus="status" begin="0" end="9">
+				<c:forEach var="movie" items="${movieList}" varStatus="status">
 					<div class="movie-wrapper">
 
 						<article class="card">
@@ -378,7 +439,21 @@ section {
 
 								<div class="rank-badge">${status.count}</div>
 
-								<div class="like-btn" title="좋아요">♡</div>
+								<c:set var="isLiked" value="${likedMap != null && likedMap[movie.movieId] == true}" />
+								
+								<div class="like-btn"
+								     data-movie-id="${movie.movieId}"
+								     aria-pressed="${isLiked ? 'true' : 'false'}"
+								     title="좋아요">
+								  <c:choose>
+								    <c:when test="${isLiked}">♥</c:when>
+								    <c:otherwise>♡</c:otherwise>
+								  </c:choose>
+								</div>
+								
+								<span class="like-count" id="like-count-${movie.movieId}">
+								  <c:out value="${movie.likeCount}" default="0" />
+								</span>
 
 								<div class="overlay"></div>
 
@@ -386,8 +461,8 @@ section {
 
 							<div class="card-foot">
 								
-								<a class="btn brand" href="movieList.do?movieId=${movie.movieId}">예매하기</a> 
-								<a class="btn detail" href="reserve.do?movieId=${movie.movieId}">상세정보</a>
+								<a class="btn brand" href="MovieListServlet">예매하기</a> 
+								<a class="btn detail" href="OneMovieServlet?movieId=${movie.movieId}">상세정보</a>
 
 							</div>
 
@@ -409,13 +484,25 @@ section {
 		</section>
 
 	</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.querySelectorAll('.like-btn').forEach(btn => {
+	  btn.addEventListener('click', async () => {
+	    const movieId = btn.dataset.movieId;
+	    if (!movieId) { console.warn('movieId 없음'); return; }
 
+	    const res = await fetch('MovieLike?movieId=' + encodeURIComponent(movieId), { method:'POST' });
+	    if (res.status === 401) { alert('로그인 후 이용해주세요.'); return; }
 
+	    const data = await res.json();
+	    btn.textContent = data.liked ? '♥' : '♡';
+	    btn.setAttribute('aria-pressed', data.liked ? 'true' : 'false');
 
-	<!-- Bootstrap JS -->
-
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	    const c = document.getElementById('like-count-' + movieId);
+	    if (c) c.textContent = data.likeCount;
+	  });
+	});
+</script>
 
 </body>
 <jsp:include page="/bottom.jsp"/>

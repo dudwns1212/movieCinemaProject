@@ -4,7 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ page import="java.util.List"%>
 <%@ page import="movieList.MovieListVO"%>
-<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.time.LocalDateTime"%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -113,6 +113,11 @@ h1 {
 
 .btn.active {
 	background-color: var(--accent);
+	color: white;
+	border-color: var(--accent);
+}
+
+.movie.active {
 	color: white;
 	border-color: var(--accent);
 }
@@ -393,167 +398,347 @@ hr.line {
 						<div class="empty-state">영화를 먼저 선택해주세요</div>
 					</div>
 
-					<div class="selected-date" id="selected-date">
-						</div>
+					<div class="selected-date" id="selected-date"></div>
 
 					<div class="tag">시간</div>
 					<div class="time-list" id="time-list">
-						<div class="time">10:30</div>
-						<div class="time">13:00</div>
-						<div class="time">15:30</div>
-						<div class="time">18:00</div>
-						<div class="time">20:30</div>
+						<div class="empty-state">영화를 먼저 선택해주세요</div>
 					</div>
 
-					<button type="button" class="final-btn" onclick="goToSeat()">예매 하기</button>
+					<button type="button" class="final-btn" onclick="goToSeat()">예매
+						하기</button>
 				</div>
 			</section>
 		</div>
 	</main>
 
 	<script type="text/javascript">
-			// 1. 지역 버튼 클릭 이벤트
-			$(document).on('click', '.location-btn', function() {
-    			console.log('지역 버튼 클릭됨');
-				
-				$('.location-btn').removeClass('active');
-				//선택효과 추가 css
-				$(this).addClass('active');
-				
-				let location = $(this).data('location');
-				console.log('선택된 지역:', location);
-				
-				// Ajax 요청
-				$.ajax({
-					url: 'CinemaServlet',           
-					data: {'location': location},        
-					dataType: "json",                    
-					success: changeCinema,
-				});
+		let selectedMovieId = null;
+		let selectedMovieTitle = null;
+		let selectedCinemaId = null;
+		let selectedCinemaName = null;
+		let selectedMoviePrice = null;
+		let selectedMoviePoster = null;
+		let selectedDate = null;
+		let selectedTime = null;
+
+		// 1. 지역 버튼 클릭 이벤트
+		$(document).on('click', '.location-btn', function() {
+			console.log('지역 버튼 클릭됨');
+
+			$('.location-btn').removeClass('active');
+			$(this).addClass('active');
+
+			let location = $(this).data('location');
+			console.log('선택된 지역:', location);
+
+			// 선택 정보 초기화
+			resetSelections();
+
+			$.ajax({
+				url : 'CinemaListApiServlet',
+				data : {
+					'location' : location
+				},
+				dataType : "json",
+				success : changeCinema,
+				error : function(xhr, status, error) {
+					console.error('영화관 조회 실패:', error);
+					console.error('상태:', status);
+					console.error('응답:', xhr.responseText);
+				}
 			});
+		});
 
-			// 2. 영화관 데이터 업데이트 함수
-			function changeCinema(data) {
-			    console.log('Ajax 성공! 받은 데이터:', data);
-			    console.log('데이터 타입:', typeof data);
-			    console.log('데이터 키 개수:', Object.keys(data).length);
-			    
-			    let cinemaListDiv = $('#cinemaList');
-			    cinemaListDiv.empty();
-			    
-			    if(Object.keys(data).length == 0) {
-			        cinemaListDiv.append('<div class="empty-state">해당 지역에 영화관이 없습니다</div>');
-			        return;
-			    }
-			    
-			    // ★ 템플릿 리터럴 대신 jQuery 방식으로 생성
-			    for(let key in data) {
-			    	
-			        let cinemaId = key;
-			        let cinemaName = data[key];
-			        let newCinemaBtn = '<button type="button" class="btn block ghost cinema-btn" data-cinema-id="' + cinemaId + '">' + cinemaName + '</button>';
-			        cinemaListDiv.append(newCinemaBtn);
-			        
-			    }
-			}
+		// 2. 영화관 데이터 업데이트 함수
+		function changeCinema(data) {
+			console.log('Ajax 성공! 받은 데이터:', data);
+			console.log('데이터 타입:', typeof data);
+			console.log('데이터 키 개수:', Object.keys(data).length);
 
-			// 3. 영화관 선택 이벤트 (동적 생성 버튼)
-			$(document).on('click', '.cinema-btn', function(){
-			    $('.cinema-btn').removeClass('active');
-			    $(this).addClass('active');
-			    
-			    let cinemaId = $(this).data('cinema-id');
-			    
-			    $.ajax({
-			        url: 'movieReserve.do',
-			        data: {'cinemaId': cinemaId},
-			        dataType: "json",
-			        success: changeMovie
-			    });
-			});
-
-			// 4. 영화 목록 업데이트
-			function changeMovie(data) {
-			    
-			    let movieListDiv = $('#movieList');
-			    movieListDiv.empty();
-			    
-			    if(data.length == 0) {
-			    	movieListDiv.append('<div class="empty-state">상영할 수 있는 영화가 없습니다.</div>');
-			        return;
-			    }
-			    
-			    for(let i = 0; i < data.length; i++) {
-			        let movie = data[i];//배열에서 각 객체를 꺼내서 movie는 이름으로 사용
-			        
-			        let newMovie = '<div class="movie" data-movie="'+ movie.movieId + '">' +
-			                      '<img src="' + (movie.poster || 'asset/images/movie_default.png') + '">' +
-			                      '<div class="content">' +
-			                      '<div class="title">' + movie.movieTitle + '</div>' +
-			                      '<div class="info">' + movie.genre + '•' + movie.movieTime + '분</div>' +
-			                      '</div>' +
-			                      '</div>';
-					movieListDiv.append(newMovie);
-			    }			    
-			}
+			let cinemaListDiv = $('#cinemaList');
+			cinemaListDiv.empty();
 			
-		    $(document).on('click', '.movie' ,function() {
-		        $('.movie').removeClass('active');
-		        $(this).addClass('active');
-		        
-		        let cinemaId = $('.cinema-btn.active').data('cinema-id');
-		        let movieId =  $(this).data('movie');
-		        
-		        $.ajax({
-		        	url: 'ScheduleServlet',
-			        data: {'cinemaId': cinemaId, 'movieId' : movieId},
-			        dataType: "json",
-			        success: changeSchedule
-		        });
-		    });
-		    
-		    function changeSchedule(data) {
-		    	
-		    	let dateListDiv = $('#date-list');
-		    	dateListDiv.empty();
-		    	
-		    	if(data.length == 0) {
-		    		dateListDiv.append('<div class="empty-state">상영할 수 있는 시간이 없습니다.</div>');
-			        return;
-		    	}
-		    	
-		    	for(let i = 0; i < data.dates.length; i++){
-		    		let date = data.dates[i];
-		    		let newDateBtn = '<button type="button" class="date-btn" data-date="' + date + '">' + date + '</button>';
-		    		dateListDiv.append(newDateBtn);
-		    	}
-		    	
+			if (!data || data.length == 0) {
+		        cinemaListDiv.append('<div class="empty-state">해당 지역에 영화관이 없습니다</div>');
+		        return;
 		    }
 
-			// 6. 시간 선택 이벤트
-			$('#time-list').on('click', '.time', function() {
-				$('.time').removeClass('active');
-				$(this).addClass('active');
-			});
+			for (let i = 0; i < data.length; i++) {
+		        let cinema = data[i];  // 올바른 접근!
+		        console.log('영화관 추가:', cinema.cinemaId, cinema.name); // 올바른 변수명!
 
-		// 좌석 선택 페이지로 이동
-		function goToSeat() {
-			const selectedMovie = $('.movie.selected');
-			if (selectedMovie.length === 0) {
-				alert('영화를 먼저 선택해주세요.');
+		        let newCinemaBtn = '<button type="button" class="btn block ghost cinema-btn" ' +
+		                          'data-cinema-id="' + cinema.cinemaId + '" ' +
+		                          'data-cinema-name="' + cinema.name + '">' +
+		                          cinema.name + '</button>';
+		        cinemaListDiv.append(newCinemaBtn);
+		    }
+
+		    console.log('총 ' + data.length + '개 영화관 추가 완료');
+		}
+
+		// 3. 영화관 선택 이벤트
+		$(document).on('click', '.cinema-btn', function() {
+			console.log('영화관 버튼 클릭됨');
+
+			$('.cinema-btn').removeClass('active');
+			$(this).addClass('active');
+
+			selectedCinemaId = $(this).data('cinema-id');
+			selectedCinemaName = $(this).data('cinema-name');
+
+			console.log('선택된 영화관 ID:', selectedCinemaId);
+			console.log('선택된 영화관 이름:', selectedCinemaName);
+
+			// 영화관 변경 시 하위 선택 초기화
+			resetMovieSelections();
+
+			$.ajax({
+				url : 'MovieListApiServlet',
+				data : {
+					'cinemaId' : selectedCinemaId
+				},
+				dataType : "json",
+				success : changeMovie,
+				error : function(xhr, status, error) {
+					console.error('영화 조회 실패:', error);
+					console.error('상태:', status);
+					console.error('응답:', xhr.responseText);
+				}
+			});
+		});
+
+		// 4. 영화 목록 업데이트
+		function changeMovie(data) {
+			console.log('영화 데이터 받음:', data);
+
+			let movieListDiv = $('#movieList');
+			movieListDiv.empty();
+
+			if (data.length == 0) {
+				movieListDiv
+						.append('<div class="empty-state">상영할 수 있는 영화가 없습니다.</div>');
 				return;
 			}
+
+			for (let i = 0; i < data.length; i++) {
+				let movie = data[i];
+
+				// moviePrice 값 확인 및 기본값 설정
+				let moviePrice = movie.moviePrice || 14000;
+				let moviePoster = movie.poster
+						|| 'asset/images/movie_default.png';
+
+				console.log('영화 데이터:', movie);
+
+				let newMovie = '<div class="movie" data-movie-id="'+ movie.movieId + 
+                '" data-movie-title="' + movie.movieTitle + 
+                '" data-movie-price="' + moviePrice + 
+                '" data-movie-poster="' + moviePoster + '">'
+						+ '<img src="' + moviePoster + '">'
+						+ '<div class="content">'
+						+ '<div class="title">'
+						+ movie.movieTitle
+						+ '</div>'
+						+ '<div class="info">'
+						+ movie.genre
+						+ ' • '
+						+ movie.movieTime
+						+ '분</div>'
+						+ '</div></div>';
+				movieListDiv.append(newMovie);
+			}
+		}
+
+		// 5. 영화 선택 이벤트
+		$(document).on('click', '.movie', function() {
+			$('.movie').removeClass('active');
+			$(this).addClass('active');
+
+			selectedMovieId = $(this).data('movie-id');
+			selectedMovieTitle = $(this).data('movie-title');
+			selectedMoviePrice = $(this).data('movie-price');
+			selectedMoviePoster = $(this).data('movie-poster');
+
+			console.log('선택된 영화 정보:');
+			console.log('- ID:', selectedMovieId);
+			console.log('- 제목:', selectedMovieTitle);
+			console.log('- 가격:', selectedMoviePrice);
+			console.log('- 포스터:', selectedMoviePoster);
+
+			// 영화관이 선택되지 않았다면 경고
+			if (!selectedCinemaId) {
+				alert('영화관을 먼저 선택해주세요.');
+				return;
+			}
+
+			// 날짜/시간 초기화
+			resetDateTimeSelections();
 			
-			const selectedTime = $('.time.active');
-			if (selectedTime.length === 0) {
+			$.ajax({
+				url : 'ShowDateListApiServlet',
+				data : {
+					'cinemaId' : selectedCinemaId,
+					'movieId' : selectedMovieId
+				},
+				dataType : "json",
+				success : changeDate,
+				error : function(xhr, status, error) {
+					console.error('날짜 조회 실패:', error);
+					console.error('상태:', status);
+					console.error('응답:', xhr.responseText);
+				}
+			});
+		});
+
+		// 6. 날짜 업데이트
+		function changeDate(data) {
+			console.log('날짜 데이터 받음:', data);
+
+			let dateListDiv = $('#date-list');
+			dateListDiv.empty();
+
+			if (!data || !data.dates || data.dates.length == 0) {
+				dateListDiv
+						.append('<div class="empty-state">상영할 수 있는 날짜가 없습니다.</div>');
+				return;
+			}
+
+			for (let i = 0; i < data.dates.length; i++) {
+				let date = data.dates[i];
+				let newDateBtn = '<button type="button" class="date-btn" data-date="' + date + '">'
+						+ date + '</button>';
+				dateListDiv.append(newDateBtn);
+			}
+		}
+
+		// 7. 날짜 선택 이벤트
+		$(document).on('click', '.date-btn', function() {
+			console.log('날짜 버튼 클릭됨')
+
+			$('.date-btn').removeClass('active');
+			$(this).addClass('active');
+
+			selectedDate = $(this).data("date");
+			console.log('선택된 날짜:', selectedDate);
+
+			selectedTime = null;
+			$('#time-list').empty();
+
+			$.ajax({
+				url : 'ShowTimeListApiServlet',
+				data : {
+					'cinemaId' : selectedCinemaId,
+					'movieId' : selectedMovieId,
+					"date" : selectedDate
+				},
+				dataType : "json",
+				success : changeTime,
+				error : function(xhr, status, error) {
+					console.error('시간 조회 실패:', error);
+				}
+			});
+		});
+
+		// 8. 시간 업데이트
+		function changeTime(data) {
+			console.log('시간 데이터 받음:', data);
+
+			let timeListDiv = $('#time-list');
+			timeListDiv.empty();
+
+			if (!data || !data.times || data.times.length == 0) {
+				timeListDiv
+						.append('<div class="empty-state">상영할 수 있는 시간이 없습니다.</div>');
+				return;
+			}
+
+			for (let i = 0; i < data.times.length; i++) {
+				let time = data.times[i];
+				let newTimeBtn = '<div class="time" data-time="' + time + '">'
+						+ time + '</div>';
+				timeListDiv.append(newTimeBtn);
+			}
+		}
+
+		// 9. 시간 선택 이벤트
+		$(document).on('click', '.time', function() {
+			$('.time').removeClass('active');
+			$(this).addClass('active');
+
+			selectedTime = $(this).data('time');
+			console.log('선택된 시간:', selectedTime);
+		});
+
+		function goToSeat() {
+			// 모든 필수 정보가 선택되었는지 확인
+			if (!selectedCinemaId) {
+				alert('영화관을 선택해주세요.');
+				return;
+			}
+			if (!selectedMovieId) {
+				alert('영화를 선택해주세요.');
+				return;
+			}
+			if (!selectedDate) {
+				alert('날짜를 선택해주세요.');
+				return;
+			}
+			if (!selectedTime) {
 				alert('상영 시간을 선택해주세요.');
 				return;
 			}
 
-			alert('좌석 선택 페이지로 이동합니다!');
-			// window.location.href = 'seat.jsp';
+			// moviePrice가 undefined인 경우 기본값 설정
+			let finalMoviePrice = selectedMoviePrice || 14000;
+
+			const params = new URLSearchParams({
+				cinemaId : selectedCinemaId || '',
+				cinemaName : selectedCinemaName || '',
+				movieId : selectedMovieId || '',
+				movieTitle : selectedMovieTitle || '',
+				moviePrice : finalMoviePrice,
+				moviePoster : selectedMoviePoster
+						|| 'asset/images/movie_default.png',
+				date : selectedDate || '',
+				time : selectedTime || ''
+			});
+
+			console.log('전달할 파라미터:', params.toString());
+
+			
+			window.location.href = 'ReserveServlet?' + params.toString();
+		}
+
+		// 선택 정보 초기화 함수들
+		function resetSelections() {
+			resetMovieSelections();
+			$('#cinemaList').html(
+					'<div class="empty-state">지역을 먼저 선택해주세요</div>');
+			selectedCinemaId = null;
+			selectedCinemaName = null;
+		}
+
+		function resetMovieSelections() {
+			resetDateTimeSelections();
+			$('#movieList').html(
+					'<div class="empty-state">영화관을 먼저 선택해주세요</div>');
+			selectedMovieId = null;
+			selectedMovieTitle = null;
+			selectedMoviePrice = null;
+			selectedMoviePoster = null;
+		}
+
+		function resetDateTimeSelections() {
+			$('#date-list')
+					.html('<div class="empty-state">영화를 먼저 선택해주세요</div>');
+			$('#time-list')
+					.html('<div class="empty-state">영화를 먼저 선택해주세요</div>');
+			selectedDate = null;
+			selectedTime = null;
 		}
 	</script>
-<jsp:include page="/bottom.jsp"/>
+	<jsp:include page="/bottom.jsp" />
 </body>
 </html>
